@@ -1,12 +1,9 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState, useMemo } from "react"
 import {
   ReactFlow,
-  useNodesState,
-  useEdgesState,
   Background,
-  Controls,
   type Node,
   type Edge,
   Position,
@@ -197,45 +194,40 @@ const initialEdges: Edge[] = [
 ]
 
 export function CognitionDAG() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
   const [activeIndex, setActiveIndex] = useState(0)
 
   // Animate through nodes sequentially
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % (nodes.length + 1))
+      setActiveIndex((prev) => (prev + 1) % (initialNodes.length + 1))
     }, 1500)
     return () => clearInterval(interval)
-  }, [nodes.length])
+  }, [])
 
-  // Update node active states and edge animations
-  useEffect(() => {
-    setNodes((nds) =>
-      nds.map((node, index) => ({
-        ...node,
-        data: { ...node.data, active: index < activeIndex },
-      }))
-    )
-    
-    setEdges((eds) =>
-      eds.map((edge) => {
-        const sourceIndex = nodes.findIndex((n) => n.id === edge.source)
-        return {
-          ...edge,
-          animated: sourceIndex < activeIndex && sourceIndex >= activeIndex - 1,
-        }
-      })
-    )
-  }, [activeIndex, setNodes, setEdges, nodes])
+  // Memoize nodes with active states
+  const nodes = useMemo(() => {
+    return initialNodes.map((node, index) => ({
+      ...node,
+      data: { ...node.data, active: index < activeIndex },
+    }))
+  }, [activeIndex])
+
+  // Memoize edges with animations
+  const edges = useMemo(() => {
+    return initialEdges.map((edge) => {
+      const sourceIndex = initialNodes.findIndex((n) => n.id === edge.source)
+      return {
+        ...edge,
+        animated: sourceIndex < activeIndex && sourceIndex >= activeIndex - 1,
+      }
+    })
+  }, [activeIndex])
 
   return (
     <div className="h-[350px] w-full rounded-lg overflow-hidden bg-background/50">
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
         fitView
         fitViewOptions={{ padding: 0.3 }}
