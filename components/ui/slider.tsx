@@ -1,59 +1,85 @@
-'use client'
+"use client"
 
-import * as React from 'react'
-import * as SliderPrimitive from '@radix-ui/react-slider'
+import * as React from "react"
+import { cn } from "@/lib/utils"
 
-import { cn } from '@/lib/utils'
-
-function Slider({
-  className,
-  defaultValue,
-  value,
-  min = 0,
-  max = 100,
-  ...props
-}: React.ComponentProps<typeof SliderPrimitive.Root>) {
-  const _values = React.useMemo(
-    () =>
-      Array.isArray(value)
-        ? value
-        : Array.isArray(defaultValue)
-          ? defaultValue
-          : [min, max],
-    [value, defaultValue, min, max],
-  )
-
-  return (
-    <SliderPrimitive.Root
-      data-slot="slider"
-      defaultValue={defaultValue}
-      value={value}
-      min={min}
-      max={max}
-      className={cn(
-        'relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col',
-        className,
-      )}
-      {...props}
-    >
-      <SliderPrimitive.Track
-        data-slot="slider-track"
-        className="bg-muted relative grow overflow-hidden rounded-full data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5"
-      >
-        <SliderPrimitive.Range
-          data-slot="slider-range"
-          className="bg-primary absolute data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
-        />
-      </SliderPrimitive.Track>
-      {Array.from({ length: _values.length }, (_, index) => (
-        <SliderPrimitive.Thumb
-          data-slot="slider-thumb"
-          key={index}
-          className="border-primary ring-ring/50 block size-4 shrink-0 rounded-full border bg-white shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
-        />
-      ))}
-    </SliderPrimitive.Root>
-  )
+export interface SliderProps {
+  value?: number[]
+  max?: number
+  min?: number
+  step?: number
+  onValueChange?: (value: number[]) => void
+  className?: string
 }
 
-export { Slider }
+export function Slider({
+  value = [0],
+  max = 100,
+  min = 0,
+  step = 1,
+  onValueChange,
+  className,
+}: SliderProps) {
+  const currentValue = value[0] ?? 0
+  const maxVal = max - 1 || 1 // Keep it safe within steps array bound
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseInt(e.target.value, 10)
+    if (onValueChange) {
+      onValueChange([val])
+    }
+  }
+
+  // Calculate percentage of glow filled track
+  const percentage = Math.min(Math.max(((currentValue - min) / (maxVal - min)) * 100, 0), 100)
+
+  return (
+    <div className={cn("relative flex w-full items-center select-none", className)}>
+      <input
+        type="range"
+        min={min}
+        max={maxVal}
+        step={step}
+        value={currentValue}
+        onChange={handleChange}
+        className="w-full h-1.5 rounded-full appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+        style={{
+          background: `linear-gradient(to right, oklch(0.72 0.19 195) 0%, oklch(0.72 0.19 195) ${percentage}%, oklch(0.22 0.025 260) ${percentage}%, oklch(0.22 0.025 260) 100%)`,
+          WebkitAppearance: "none",
+        }}
+      />
+      <style jsx>{`
+        input[type="range"]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          background: oklch(0.95 0.01 260);
+          border: 2px solid oklch(0.72 0.19 195);
+          box-shadow: 0 0 10px oklch(0.72 0.19 195 / 0.5);
+          cursor: pointer;
+          transition: transform 0.1s ease, background-color 0.1s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+          transform: scale(1.2);
+          background: oklch(0.72 0.19 195);
+        }
+        input[type="range"]::-moz-range-thumb {
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          background: oklch(0.95 0.01 260);
+          border: 2px solid oklch(0.72 0.19 195);
+          box-shadow: 0 0 10px oklch(0.72 0.19 195 / 0.5);
+          cursor: pointer;
+          transition: transform 0.1s ease, background-color 0.1s ease;
+        }
+        input[type="range"]::-moz-range-thumb:hover {
+          transform: scale(1.2);
+          background: oklch(0.72 0.19 195);
+        }
+      `}</style>
+    </div>
+  )
+}

@@ -63,7 +63,11 @@ export function CognitionStream() {
     let index = 0
     const interval = setInterval(() => {
       if (index < sampleEvents.length) {
-        setVisibleEvents((prev) => [...prev, sampleEvents[index]])
+        const eventCopy = {
+          ...sampleEvents[index],
+          id: `${sampleEvents[index].id}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        }
+        setVisibleEvents((prev) => [...prev, eventCopy])
         index++
       } else {
         // Reset and start over

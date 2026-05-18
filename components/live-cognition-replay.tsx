@@ -11,7 +11,7 @@ import {
   Position,
 } from "@xyflow/react"
 import "@xyflow/react/dist/style.css"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { Play, Pause, RotateCcw, SkipForward } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
@@ -188,6 +188,7 @@ export function LiveCognitionReplay() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
   const [isPlaying, setIsPlaying] = useState(true)
   const [currentStep, setCurrentStep] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
   const totalSteps = nodes.length
 
   const updateGraph = useCallback((step: number) => {
@@ -247,6 +248,66 @@ export function LiveCognitionReplay() {
     setIsPlaying(false)
   }
 
+  // Drag and Drop handlers
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = () => {
+    setIsDragging(false)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+    
+    const file = e.dataTransfer.files[0]
+    if (file && (file.type === "application/json" || file.name.endsWith(".json"))) {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        try {
+          const data = JSON.parse(event.target?.result as string)
+          if (Array.isArray(data)) {
+            // Reconstruct straight chain from steps
+            const newNodes: Node[] = data.map((item, idx) => ({
+              id: String(idx + 1),
+              type: item.type || "thought",
+              position: { x: 50 + idx * 180, y: 100 + (idx % 2) * 60 },
+              data: { 
+                label: item.label || item.title || `Node ${idx + 1}`, 
+                description: item.description || item.subtext || "Custom traced event",
+                active: false,
+                completed: false
+              },
+              sourcePosition: Position.Right,
+              targetPosition: Position.Left,
+            }))
+            const newEdges: Edge[] = newNodes.slice(0, -1).map((node, idx) => ({
+              id: `e${idx+1}-${idx+2}`,
+              source: node.id,
+              target: newNodes[idx+1].id,
+              animated: false,
+              style: { stroke: "oklch(0.72 0.19 195 / 0.4)", strokeWidth: 2 }
+            }))
+            setNodes(newNodes)
+            setEdges(newEdges)
+            setCurrentStep(0)
+            setIsPlaying(true)
+          } else if (data.nodes && Array.isArray(data.nodes)) {
+            setNodes(data.nodes)
+            setEdges(data.edges || [])
+            setCurrentStep(0)
+            setIsPlaying(true)
+          }
+        } catch (err) {
+          alert("Invalid Aether Trace format or corrupt JSON!")
+        }
+      }
+      reader.readAsText(file)
+    }
+  }
+
   return (
     <section className="py-24 relative" id="replay">
       <div className="container mx-auto px-6">
@@ -257,14 +318,14 @@ export function LiveCognitionReplay() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <span className="inline-block px-4 py-1.5 rounded-full glass-panel text-xs font-medium text-primary mb-4">
-            Interactive Demo
+          <span className="inline-block px-4 py-1.5 rounded-full glass-panel text-xs font-semibold text-primary mb-4">
+            Interactive Playback Sandbox
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-gradient-cyan">Live Cognition</span> Replay
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+            Interactive <span className="text-gradient-cyan">Cognition Replay</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Watch AI reasoning unfold step by step. Pause, rewind, and explore every decision node.
+          <p className="text-muted-foreground text-base max-w-2xl mx-auto">
+            Watch AI reasoning unfold step by step. Drag & drop your local agent trace JSON file directly onto the canvas to replay your own custom runs!
           </p>
         </motion.div>
 
@@ -273,10 +334,13 @@ export function LiveCognitionReplay() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="glass-panel rounded-2xl p-6 max-w-5xl mx-auto"
+          className="glass-panel rounded-2xl p-6 max-w-5xl mx-auto relative overflow-hidden"
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
         >
           {/* Controls */}
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-border/50">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-border/50 relative z-10">
             <div className="flex items-center gap-3">
               <Button
                 variant="outline"
@@ -305,13 +369,13 @@ export function LiveCognitionReplay() {
             </div>
 
             <div className="flex items-center gap-4">
-              <span className="text-xs text-muted-foreground">
-                Step {Math.min(currentStep + 1, totalSteps)} / {totalSteps}
+              <span className="text-xs font-mono text-muted-foreground">
+                Node {Math.min(currentStep + 1, totalSteps)} / {totalSteps}
               </span>
               <div className="w-48">
                 <Slider
                   value={[currentStep]}
-                  max={totalSteps}
+                  max={totalSteps - 1}
                   step={1}
                   onValueChange={([value]) => {
                     setCurrentStep(value)
@@ -323,8 +387,31 @@ export function LiveCognitionReplay() {
             </div>
           </div>
 
-          {/* Graph */}
-          <div className="h-[400px] rounded-xl overflow-hidden bg-background/30">
+          {/* Graph Canvas */}
+          <div className="h-[400px] rounded-xl overflow-hidden bg-background/30 relative">
+            
+            {/* Drag and Drop Hover Overlay */}
+            <AnimatePresence>
+              {isDragging && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 bg-background/90 backdrop-blur-md border-4 border-dashed border-primary/50 rounded-xl z-50 flex flex-col items-center justify-center gap-4 text-center pointer-events-none"
+                >
+                  <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center text-primary animate-bounce">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold text-foreground">Drop Aether Trace JSON</h4>
+                    <p className="text-xs text-muted-foreground mt-1">Reconstruct and replay your agent cognition instantly</p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <ReactFlow
               nodes={nodes}
               edges={edges}
@@ -346,17 +433,17 @@ export function LiveCognitionReplay() {
             </ReactFlow>
           </div>
 
-          {/* Timeline */}
-          <div className="mt-6 pt-4 border-t border-border/50">
-            <div className="flex justify-between items-center">
-              {initialNodes.map((node, index) => (
+          {/* Timeline Bar */}
+          <div className="mt-6 pt-4 border-t border-border/50 relative z-10">
+            <div className="flex justify-between items-center gap-2 overflow-x-auto pb-2">
+              {nodes.map((node, index) => (
                 <button
                   key={node.id}
                   onClick={() => {
                     setCurrentStep(index)
                     setIsPlaying(false)
                   }}
-                  className={`flex-1 py-2 px-3 text-xs transition-all ${
+                  className={`flex-1 min-w-[90px] py-2 px-3 text-xs transition-all ${
                     index === currentStep
                       ? "text-primary font-medium"
                       : index < currentStep
@@ -371,7 +458,9 @@ export function LiveCognitionReplay() {
                       ? "bg-primary/50"
                       : "bg-muted-foreground/30"
                   }`} />
-                  {node.data.label}
+                  <div className="truncate max-w-[120px] font-mono text-[10px]">
+                    {String((node.data as any)?.label || "")}
+                  </div>
                 </button>
               ))}
             </div>
