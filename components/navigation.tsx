@@ -9,9 +9,10 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 const navLinks = [
-  { label: "Replay", href: "#replay" },
-  { label: "SDK", href: "#sdk" },
-  { label: "Demos", href: "#replay-stories" },
+  { label: "Replay", href: "/#replay" },
+  { label: "SDK", href: "/#sdk" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "Docs", href: "/docs" },
 ]
 
 export function Navigation() {
@@ -73,31 +74,41 @@ export function Navigation() {
                 GitHub
               </Button>
               {session ? (
-                <>
+                <div className="flex items-center gap-3">
+                  {/* Dynamic Developer Profile Avatar */}
+                  <div className="hidden sm:flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-xl pl-2 pr-3 py-1 font-mono text-xs text-primary select-none max-w-[170px]">
+                    <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center font-bold text-[10px] text-primary-foreground shrink-0 uppercase">
+                      {session?.user?.email?.charAt(0) || "D"}
+                    </div>
+                    <span className="truncate max-w-[100px] font-semibold text-white/90">
+                      {session?.user?.email?.split("@")[0]}
+                    </span>
+                  </div>
+                  
                   <Link href="/dashboard">
-                    <Button size="sm" className="glow-cyan-subtle font-mono">
-                      Dashboard
+                    <Button size="sm" className="glow-cyan-subtle font-mono text-xs">
+                      Launch Replay
                     </Button>
                   </Link>
                   <Button 
-                    variant="outline" 
+                    variant="ghost" 
                     size="sm" 
                     onClick={signOut}
-                    className="border-destructive/20 hover:border-destructive hover:bg-destructive/10 text-xs font-mono text-destructive-foreground"
+                    className="text-muted-foreground hover:text-destructive hover:bg-destructive/5 text-xs font-mono px-2"
                   >
-                    Logout
+                    Sign Out
                   </Button>
-                </>
+                </div>
               ) : (
                 <>
                   <Link href="/auth">
-                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground font-mono">
+                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground font-mono text-xs">
                       Sign In
                     </Button>
                   </Link>
                   <Link href="/auth">
-                    <Button size="sm" className="glow-cyan-subtle font-mono">
-                      Get Started
+                    <Button size="sm" className="glow-cyan-subtle font-mono text-xs">
+                      Start Debugging Agents
                     </Button>
                   </Link>
                 </>

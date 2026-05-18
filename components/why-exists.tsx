@@ -13,7 +13,7 @@ export function WhyExists() {
 
       <div className="container mx-auto px-6 relative z-10 max-w-5xl">
         <div className="grid md:grid-cols-12 gap-12 items-center">
-          
+
           {/* LEFT: Core Emotional Hook (7 cols) */}
           <div className="md:col-span-7 space-y-6">
             <motion.div
@@ -82,7 +82,7 @@ export function WhyExists() {
                 THE AETHER WAY: COGNITION REPLAY
               </div>
               <p className="text-xs text-foreground/90 leading-relaxed font-medium">
-                Cinematic traversal trees mapping thoughts, parallel tools, and real-time self-correction branches. Spot security issues in 1 second.
+                Cinematic traversal trees mapping thoughts, parallel tools, and real-time self correction branches. Spot security issues in 1 second.
               </p>
             </motion.div>
           </div>

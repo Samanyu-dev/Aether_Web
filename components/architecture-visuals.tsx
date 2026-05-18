@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { 
-  Binary, 
-  Rss, 
-  Network, 
+import {
+  Binary,
+  Rss,
+  Network,
   ArrowRight,
   Zap
 } from "lucide-react"
@@ -38,7 +38,7 @@ const pipelineSteps: PipelineStep[] = [
     sub: "Cognitive DAG assembly",
     description: "Orders incoming events by nanosecond timestamp, mapping nested parent/child branches in memory into a Directed Acyclic Graph (DAG).",
     icon: Network,
-    details: ["Dependency parsing", "Dynamic graph layout", "Visual self-correction trees"]
+    details: ["Dependency parsing", "Dynamic graph layout", "Visual self correction trees"]
   }
 ]
 
@@ -61,10 +61,10 @@ export function ArchitectureVisuals() {
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        
+
         {/* Title */}
         <div className="max-w-3xl mx-auto text-center mb-20">
-          <motion.span 
+          <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -72,7 +72,7 @@ export function ArchitectureVisuals() {
           >
             Replay Engine Walkthrough
           </motion.span>
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -81,7 +81,7 @@ export function ArchitectureVisuals() {
           >
             Behind the Replay: <span className="text-gradient-cyan">How it Flows</span>
           </motion.h2>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -94,7 +94,7 @@ export function ArchitectureVisuals() {
 
         {/* The Pipeline Visual Flow Grid */}
         <div className="grid lg:grid-cols-12 gap-8 items-center max-w-6xl mx-auto">
-          
+
           {/* Left panel: Interactive Step-List (7 cols) */}
           <div className="lg:col-span-7 space-y-3">
             {pipelineSteps.map((step, idx) => {
@@ -105,25 +105,23 @@ export function ArchitectureVisuals() {
                 <motion.div
                   key={step.title}
                   onClick={() => setActiveStep(idx)}
-                  className={`flex items-start gap-4 p-5 rounded-2xl border transition-all duration-300 cursor-pointer relative overflow-hidden ${
-                    isActive 
-                      ? "bg-card border-primary/40 shadow-[0_0_20px_oklch(0.72_0.19_195/0.05)] text-foreground" 
+                  className={`flex items-start gap-4 p-5 rounded-2xl border transition-all duration-300 cursor-pointer relative overflow-hidden ${isActive
+                      ? "bg-card border-primary/40 shadow-[0_0_20px_oklch(0.72_0.19_195/0.05)] text-foreground"
                       : "bg-card/30 border-border/30 hover:border-border/60 text-muted-foreground hover:text-foreground"
-                  }`}
+                    }`}
                   whileHover={{ x: 4 }}
                 >
                   {/* Glowing active bar */}
                   {isActive && (
-                    <motion.div 
+                    <motion.div
                       layoutId="activeGlow"
-                      className="absolute left-0 top-0 bottom-0 w-1 bg-primary" 
+                      className="absolute left-0 top-0 bottom-0 w-1 bg-primary"
                     />
                   )}
 
                   {/* Step Number Badge */}
-                  <div className={`mt-0.5 text-xs font-mono font-bold px-2 py-1 rounded ${
-                    isActive ? "bg-primary/20 text-primary" : "bg-muted/30 text-muted-foreground"
-                  }`}>
+                  <div className={`mt-0.5 text-xs font-mono font-bold px-2 py-1 rounded ${isActive ? "bg-primary/20 text-primary" : "bg-muted/30 text-muted-foreground"
+                    }`}>
                     0{idx + 1}
                   </div>
 
@@ -134,7 +132,7 @@ export function ArchitectureVisuals() {
                       <span className="text-[11px] font-mono opacity-60">• {step.sub}</span>
                     </div>
                     {isActive && (
-                      <motion.p 
+                      <motion.p
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         className="text-xs text-muted-foreground leading-relaxed pt-1"
@@ -154,7 +152,7 @@ export function ArchitectureVisuals() {
             <div className="absolute inset-0 pointer-events-none opacity-20 bg-gradient-to-br from-primary/10 to-accent/10" />
 
             <div className="relative z-10 flex-1 flex flex-col justify-between">
-              
+
               {/* Header */}
               <div className="flex items-center justify-between border-b border-border/30 pb-4">
                 <div className="flex items-center gap-2">
@@ -174,19 +172,19 @@ export function ArchitectureVisuals() {
               <div className="my-10 flex flex-col items-center justify-center relative py-6">
                 <div className="relative flex items-center justify-center">
                   {/* Glowing Pulse Rings */}
-                  <motion.div 
+                  <motion.div
                     animate={{ scale: [1, 1.4, 1], opacity: [0.15, 0.4, 0.15] }}
                     transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute w-32 h-32 rounded-full border border-primary/20" 
+                    className="absolute w-32 h-32 rounded-full border border-primary/20"
                   />
-                  <motion.div 
+                  <motion.div
                     animate={{ scale: [1, 1.8, 1], opacity: [0.05, 0.2, 0.05] }}
                     transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                    className="absolute w-32 h-32 rounded-full border border-primary/10" 
+                    className="absolute w-32 h-32 rounded-full border border-primary/10"
                   />
 
                   {/* Icon Card */}
-                  <motion.div 
+                  <motion.div
                     key={activeStep}
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect, useMemo } from "react"
+import { useState, useCallback, useEffect, useMemo, useRef } from "react"
 import {
   ReactFlow,
   useNodesState,
@@ -128,6 +128,12 @@ export function DashboardReplay({ trace }: DashboardReplayProps) {
   const [currentStep, setCurrentStep] = useState(0)
   const [speed, setSpeed] = useState(1500) // ms interval
 
+  // Keep a ref of nodes to prevent recreate loop of updateGraph
+  const nodesRef = useRef<Node[]>([])
+  useEffect(() => {
+    nodesRef.current = nodes
+  }, [nodes])
+
   // Re-generate nodes and edges if the trace changes
   useEffect(() => {
     if (!trace) return
@@ -181,8 +187,8 @@ export function DashboardReplay({ trace }: DashboardReplayProps) {
     
     setEdges((eds) =>
       eds.map((edge) => {
-        const sourceIndex = nodes.findIndex((n) => n.id === edge.source)
-        const targetIndex = nodes.findIndex((n) => n.id === edge.target)
+        const sourceIndex = nodesRef.current.findIndex((n) => n.id === edge.source)
+        const targetIndex = nodesRef.current.findIndex((n) => n.id === edge.target)
         return {
           ...edge,
           animated: sourceIndex < step && targetIndex <= step,
@@ -194,7 +200,7 @@ export function DashboardReplay({ trace }: DashboardReplayProps) {
         }
       })
     )
-  }, [nodes, setNodes, setEdges])
+  }, [setNodes, setEdges])
 
   useEffect(() => {
     if (nodes.length > 0) {

@@ -154,6 +154,17 @@
 }
 
 /* React Flow custom styles */
+.react-flow {
+  background: transparent !important;
+}
+
+.react-flow__renderer,
+.react-flow__pane,
+.react-flow__viewport,
+.react-flow__container {
+  background: transparent !important;
+}
+
 .react-flow__node {
   font-family: var(--font-sans);
 }
@@ -164,17 +175,42 @@
 }
 
 .react-flow__edge.animated path {
-  stroke-dasharray: 5;
-  animation: dashdraw 0.5s linear infinite;
+  stroke-dasharray: 6 6;
+  animation: flow-particle 0.35s linear infinite !important;
 }
 
-@keyframes dashdraw {
+@keyframes flow-particle {
   from {
-    stroke-dashoffset: 10;
+    stroke-dashoffset: 12;
   }
   to {
     stroke-dashoffset: 0;
   }
+}
+
+.react-flow__minimap {
+  background: oklch(0.08 0.01 260 / 0.95) !important;
+  border: 1px solid oklch(0.22 0.025 260 / 0.5) !important;
+  border-radius: var(--radius);
+}
+
+.react-flow__controls {
+  background: oklch(0.12 0.015 260 / 0.9) !important;
+  border: 1px solid oklch(0.22 0.025 260 / 0.5) !important;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.react-flow__controls-button {
+  background: transparent !important;
+  border-bottom: 1px solid oklch(0.22 0.025 260 / 0.5) !important;
+  color: oklch(0.95 0.01 260) !important;
+  fill: oklch(0.95 0.01 260) !important;
+}
+
+.react-flow__controls-button:hover {
+  background: oklch(0.72 0.19 195 / 0.2) !important;
 }
 
 /* Smooth scrolling */

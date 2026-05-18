@@ -75,7 +75,7 @@ const DEFAULT_DEMO_TRACES: Trace[] = [
   {
     id: "demo-hallucination",
     created_at: new Date(Date.now() - 3600000 * 24).toISOString(),
-    title: "RAG Hallucination Self-Correction",
+    title: "RAG Hallucination self correction",
     description: "Trace showing automatic detection and correction of hallucinated citations in medical query.",
     nodes: [
       { id: "1", type: "thought", position: { x: 50, y: 100 }, data: { label: "Retrieve Context", description: "Searching medical database for 'dosage recommendations'", active: false, completed: true } },
@@ -121,9 +121,7 @@ const mockSupabase: any = {
       localStorage.setItem(SIMULATED_SESSION_KEY, JSON.stringify(session))
 
       // Trigger auth state change
-      if (mockSupabase.auth._authCallback) {
-        mockSupabase.auth._authCallback("SIGNED_IN", session)
-      }
+      mockSupabase.auth._triggerCallbacks("SIGNED_IN", session)
 
       return { data: { user: newUser, session }, error: null }
     },
@@ -137,17 +135,13 @@ const mockSupabase: any = {
       const session = { user: safeUser, access_token: "mock-token-" + Math.random(), expires_at: Date.now() + 3600000 }
       localStorage.setItem(SIMULATED_SESSION_KEY, JSON.stringify(session))
 
-      if (mockSupabase.auth._authCallback) {
-        mockSupabase.auth._authCallback("SIGNED_IN", session)
-      }
+      mockSupabase.auth._triggerCallbacks("SIGNED_IN", session)
 
       return { data: { user: safeUser, session }, error: null }
     },
     signOut: async () => {
       localStorage.removeItem(SIMULATED_SESSION_KEY)
-      if (mockSupabase.auth._authCallback) {
-        mockSupabase.auth._authCallback("SIGNED_OUT", null)
-      }
+      mockSupabase.auth._triggerCallbacks("SIGNED_OUT", null)
       return { error: null }
     },
     getSession: async () => {
@@ -155,16 +149,35 @@ const mockSupabase: any = {
       return { data: { session }, error: null }
     },
     onAuthStateChange: (callback: any) => {
-      mockSupabase.auth._authCallback = callback
+      mockSupabase.auth._authCallbacks.push(callback)
       const session = getSimulatedSession()
       if (session) {
         callback("SIGNED_IN", session)
       } else {
         callback("SIGNED_OUT", null)
       }
-      return { data: { subscription: { unsubscribe: () => { mockSupabase.auth._authCallback = null } } } }
+      return {
+        data: {
+          subscription: {
+            unsubscribe: () => {
+              mockSupabase.auth._authCallbacks = mockSupabase.auth._authCallbacks.filter(
+                (cb: any) => cb !== callback
+              )
+            }
+          }
+        }
+      }
     },
-    _authCallback: null as any
+    _authCallbacks: [] as any[],
+    _triggerCallbacks: (event: string, session: any) => {
+      mockSupabase.auth._authCallbacks.forEach((cb: any) => {
+        try {
+          if (cb) cb(event, session)
+        } catch (e) {
+          console.error("Error in simulated auth listener callback:", e)
+        }
+      })
+    }
   },
 
   from: (table: string) => {

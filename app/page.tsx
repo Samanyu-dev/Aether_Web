@@ -29,14 +29,14 @@ export default function Home() {
       {/* 3. Hallucination Detection Story (Phase 6: The most important section) */}
       <HallucinationStory />
 
-      {/* 4. Replay Engine Explanation - How Aether Works (Phase 7) */}
+      {/* 4. Replay Engine Explanation - How Aether Works */}
       <ArchitectureVisuals />
 
-      {/* 5. Local-First Positioning - Privacy Sealed & git-friendly (Phase 8) */}
-      <LocalFirstShowcase />
-
-      {/* 6. Real SDK Onboarding & Simulated Terminal Playback (Phase 9) */}
+      {/* 5. Real SDK Onboarding & Simulated Terminal Playback */}
       <SDKShowcase />
+
+      {/* 6. Local First Positioning - Privacy Sealed & git-friendly */}
+      <LocalFirstShowcase />
 
       {/* 7. Demo Replays Library (Simple Reasoning, Tool Agent, Hallucinations) */}
       <DemoRecordings />

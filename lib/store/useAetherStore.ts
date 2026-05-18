@@ -158,6 +158,7 @@ export const useAetherStore = create<AetherState>((set, get) => {
     },
 
     fetchTraces: async () => {
+      if (get().isSyncing) return
       const user = get().user
       set({ isSyncing: true, error: null })
       try {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import {
   ReactFlow,
   useNodesState,
@@ -98,15 +98,15 @@ function ReplayOutputNode({ data }: { data: { label: string; description: string
       animate={{ scale: 1, opacity: 1 }}
       className={`px-5 py-4 rounded-xl border-2 transition-all duration-500 min-w-[180px] ${
         data.active 
-          ? "bg-chart-4/20 border-chart-4 scale-105" 
+          ? "bg-emerald-500/20 border-emerald-500 scale-105" 
           : data.completed
-          ? "bg-chart-4/10 border-chart-4/50"
+          ? "bg-emerald-500/10 border-emerald-500/50"
           : "bg-card/60 border-border/30"
       }`}
-      style={data.active ? { boxShadow: "0 0 30px oklch(0.75 0.18 180 / 0.3)" } : {}}
+      style={data.active ? { boxShadow: "0 0 30px rgba(16, 185, 129, 0.3)" } : {}}
     >
       <div className="flex items-center gap-3">
-        <svg className={`w-4 h-4 transition-colors ${data.active || data.completed ? "text-chart-4" : "text-muted-foreground/50"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className={`w-4 h-4 transition-colors ${data.active || data.completed ? "text-emerald-400" : "text-muted-foreground/50"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <span className="text-sm font-semibold text-foreground">{data.label}</span>
@@ -127,60 +127,68 @@ const initialNodes: Node[] = [
   {
     id: "1",
     type: "thought",
-    position: { x: 50, y: 100 },
-    data: { label: "Parse Input", description: "Tokenizing user request", active: false, completed: false },
+    position: { x: 50, y: 180 },
+    data: { label: "1. User Input", description: "Parsing task: 'Prune DevOps logs safely'", active: false, completed: false },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
   },
   {
     id: "2",
     type: "thought",
-    position: { x: 300, y: 30 },
-    data: { label: "Plan Strategy", description: "Determining approach", active: false, completed: false },
+    position: { x: 230, y: 80 },
+    data: { label: "2. Plan Strategy", description: "Formulating log sweeping paths", active: false, completed: false },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
   },
   {
     id: "3",
     type: "tool",
-    position: { x: 300, y: 170 },
-    data: { label: "web_search()", description: "Fetching external data", active: false, completed: false },
+    position: { x: 410, y: 180 },
+    data: { label: "3. bash_run(find)", description: "Scanning folders under /var/log", active: false, completed: false },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
   },
   {
     id: "4",
     type: "thought",
-    position: { x: 550, y: 30 },
-    data: { label: "Analyze Results", description: "Processing search data", active: false, completed: false },
+    position: { x: 590, y: 80 },
+    data: { label: "4. Memory Lookup", description: "Checking environment rules safety", active: false, completed: false },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
   },
   {
     id: "5",
     type: "hallucination",
-    position: { x: 550, y: 170 },
-    data: { label: "Uncertainty Zone", description: "Low confidence detected", active: false, completed: false },
+    position: { x: 770, y: 280 },
+    data: { label: "5. Wildcard Risk", description: "Wildcard 'rm -rf /var/log/*' injected!", active: false, completed: false },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
   },
   {
     id: "6",
+    type: "tool",
+    position: { x: 950, y: 180 },
+    data: { label: "6. Sandbox Correct", description: "Bypassing malicious arguments", active: false, completed: false },
+    sourcePosition: Position.Right,
+    targetPosition: Position.Left,
+  },
+  {
+    id: "7",
     type: "output",
-    position: { x: 800, y: 100 },
-    data: { label: "Generate Output", description: "Composing final response", active: false, completed: false },
+    position: { x: 1130, y: 180 },
+    data: { label: "7. Safe Response", description: "Success: Sweep done. 0 escapes.", active: false, completed: false },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
   },
 ]
 
 const initialEdges: Edge[] = [
-  { id: "e1-2", source: "1", target: "2", animated: false, style: { stroke: "oklch(0.72 0.19 195 / 0.4)", strokeWidth: 2 } },
-  { id: "e1-3", source: "1", target: "3", animated: false, style: { stroke: "oklch(0.72 0.19 195 / 0.4)", strokeWidth: 2 } },
-  { id: "e2-4", source: "2", target: "4", animated: false, style: { stroke: "oklch(0.72 0.19 195 / 0.4)", strokeWidth: 2 } },
-  { id: "e3-5", source: "3", target: "5", animated: false, style: { stroke: "oklch(0.72 0.19 195 / 0.4)", strokeWidth: 2 } },
-  { id: "e4-6", source: "4", target: "6", animated: false, style: { stroke: "oklch(0.72 0.19 195 / 0.4)", strokeWidth: 2 } },
-  { id: "e5-6", source: "5", target: "6", animated: false, style: { stroke: "oklch(0.72 0.19 195 / 0.4)", strokeWidth: 2 } },
+  { id: "e1-2", source: "1", target: "2", animated: false, style: { stroke: "oklch(0.72 0.19 195 / 0.3)", strokeWidth: 2 } },
+  { id: "e2-3", source: "2", target: "3", animated: false, style: { stroke: "oklch(0.72 0.19 195 / 0.3)", strokeWidth: 2 } },
+  { id: "e3-4", source: "3", target: "4", animated: false, style: { stroke: "oklch(0.72 0.19 195 / 0.3)", strokeWidth: 2 } },
+  { id: "e4-5", source: "4", target: "5", animated: false, style: { stroke: "oklch(0.577 0.245 27.325 / 0.3)", strokeWidth: 2 } },
+  { id: "e5-6", source: "5", target: "6", animated: false, style: { stroke: "oklch(0.65 0.22 300 / 0.3)", strokeWidth: 2 } },
+  { id: "e6-7", source: "6", target: "7", animated: false, style: { stroke: "oklch(0.75 0.18 180 / 0.3)", strokeWidth: 2 } },
 ]
 
 export function LiveCognitionReplay() {
@@ -190,6 +198,12 @@ export function LiveCognitionReplay() {
   const [currentStep, setCurrentStep] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
   const totalSteps = nodes.length
+
+  // Keep a ref of nodes to query within dropped trace nodes safely
+  const nodesRef = useRef<Node[]>([])
+  useEffect(() => {
+    nodesRef.current = nodes
+  }, [nodes])
 
   const updateGraph = useCallback((step: number) => {
     setNodes((nds) =>
@@ -205,8 +219,8 @@ export function LiveCognitionReplay() {
     
     setEdges((eds) =>
       eds.map((edge) => {
-        const sourceIndex = initialNodes.findIndex((n) => n.id === edge.source)
-        const targetIndex = initialNodes.findIndex((n) => n.id === edge.target)
+        const sourceIndex = nodesRef.current.findIndex((n) => n.id === edge.source)
+        const targetIndex = nodesRef.current.findIndex((n) => n.id === edge.target)
         return {
           ...edge,
           animated: sourceIndex < step && targetIndex <= step,
@@ -228,7 +242,7 @@ export function LiveCognitionReplay() {
     
     const interval = setInterval(() => {
       setCurrentStep((prev) => {
-        if (prev >= totalSteps) {
+        if (prev >= totalSteps - 1) {
           return 0
         }
         return prev + 1
@@ -433,36 +447,94 @@ export function LiveCognitionReplay() {
             </ReactFlow>
           </div>
 
-          {/* Timeline Bar */}
-          <div className="mt-6 pt-4 border-t border-border/50 relative z-10">
-            <div className="flex justify-between items-center gap-2 overflow-x-auto pb-2">
-              {nodes.map((node, index) => (
-                <button
-                  key={node.id}
-                  onClick={() => {
-                    setCurrentStep(index)
-                    setIsPlaying(false)
-                  }}
-                  className={`flex-1 min-w-[90px] py-2 px-3 text-xs transition-all ${
-                    index === currentStep
-                      ? "text-primary font-medium"
-                      : index < currentStep
-                      ? "text-muted-foreground"
-                      : "text-muted-foreground/50"
-                  }`}
-                >
-                  <div className={`w-2 h-2 rounded-full mx-auto mb-1 transition-colors ${
-                    index === currentStep
-                      ? "bg-primary"
-                      : index < currentStep
-                      ? "bg-primary/50"
-                      : "bg-muted-foreground/30"
-                  }`} />
-                  <div className="truncate max-w-[120px] font-mono text-[10px]">
-                    {String((node.data as any)?.label || "")}
+          {/* Premiere Pro style AI Cognition Timeline Control Grid */}
+          <div className="mt-8 pt-6 border-t border-border/30 relative z-10">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-muted-foreground">Cognition Timeline Tracks</span>
+              <span className="text-[10px] font-mono text-primary/80">Premiere Replay Mode</span>
+            </div>
+            
+            <div className="relative flex items-center justify-between gap-3 overflow-x-auto pb-4 pt-2 px-1 scrollbar-none">
+              {/* Dynamic horizontal connector line */}
+              <div className="absolute top-[21px] left-8 right-8 h-[2px] bg-border/40 z-0 pointer-events-none" />
+              
+              {nodes.map((node, index) => {
+                const isActive = index === currentStep
+                const isCompleted = index < currentStep
+                const type = (node.type as string) || "thought"
+                
+                // Color codes
+                let colorClass = "bg-primary"
+                let ringClass = "border-primary/20"
+                if (type === "tool") {
+                  colorClass = "bg-accent"
+                  ringClass = "border-accent/20"
+                } else if (type === "hallucination") {
+                  colorClass = "bg-destructive animate-pulse"
+                  ringClass = "border-destructive/30"
+                } else if (type === "output") {
+                  colorClass = "bg-emerald-400"
+                  ringClass = "border-emerald-500/20"
+                }
+
+                return (
+                  <div key={node.id} className="flex-1 min-w-[120px] relative z-10 group flex flex-col items-center">
+                    <button
+                      onClick={() => {
+                        setCurrentStep(index)
+                        setIsPlaying(false)
+                      }}
+                      className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all duration-300 ${
+                        isActive
+                          ? "bg-background border-primary glow-cyan scale-110"
+                          : isCompleted
+                          ? "bg-background border-primary/50 text-primary/70"
+                          : "bg-[#0b0b12] border-border/40 text-muted-foreground/40 hover:border-border/80"
+                      }`}
+                    >
+                      {type === "thought" && (
+                        <span className={`text-[10px] font-mono font-bold ${isActive ? "text-primary" : "text-muted-foreground"}`}>COG</span>
+                      )}
+                      {type === "tool" && (
+                        <svg className={`w-3.5 h-3.5 ${isActive ? "text-accent" : "text-muted-foreground"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        </svg>
+                      )}
+                      {type === "hallucination" && (
+                        <svg className={`w-3.5 h-3.5 text-destructive ${isActive ? "animate-pulse" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                      )}
+                      {type === "output" && (
+                        <svg className={`w-3.5 h-3.5 text-emerald-400`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </button>
+
+                    {/* Small Connector Node indicator dot */}
+                    <div className={`w-2 h-2 rounded-full mt-2 transition-all duration-300 ${
+                      isActive ? `${colorClass} scale-125 ring-4 ${ringClass}` : isCompleted ? "bg-primary/60" : "bg-muted-foreground/30"
+                    }`} />
+
+                    {/* Node Metadata label & Hover descriptions popup */}
+                    <div className="mt-2 text-center w-full">
+                      <div className={`text-[10px] font-mono font-bold truncate max-w-[110px] ${isActive ? "text-primary" : "text-muted-foreground/80"}`}>
+                        {String((node.data as any)?.label || "")}
+                      </div>
+                    </div>
+
+                    {/* Hover Preview Panel card */}
+                    <div className="absolute bottom-14 hidden group-hover:flex flex-col bg-[#08080f] border border-border/80 rounded-xl p-3 text-[10px] font-mono text-muted-foreground w-48 shadow-2xl z-50 pointer-events-none transition-all duration-300">
+                      <span className={`text-[8px] font-bold uppercase tracking-wider mb-1 ${
+                        type === "thought" ? "text-primary" : type === "tool" ? "text-accent" : type === "hallucination" ? "text-destructive" : "text-emerald-400"
+                      }`}>{type}</span>
+                      <p className="text-white font-bold text-[10px] mb-1">{String((node.data as any)?.label || "")}</p>
+                      <p className="text-muted-foreground leading-relaxed">{(node.data as any)?.description || ""}</p>
+                    </div>
                   </div>
-                </button>
-              ))}
+                )
+              })}
             </div>
           </div>
         </motion.div>

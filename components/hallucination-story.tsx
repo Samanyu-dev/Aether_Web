@@ -2,17 +2,17 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { 
-  Play, 
-  Pause, 
-  RotateCcw, 
-  ChevronRight, 
-  Shield, 
-  ShieldAlert, 
-  Terminal, 
-  Cpu, 
-  CornerDownRight, 
-  Activity, 
+import {
+  Play,
+  Pause,
+  RotateCcw,
+  ChevronRight,
+  Shield,
+  ShieldAlert,
+  Terminal,
+  Cpu,
+  CornerDownRight,
+  Activity,
   ArrowRight,
   CheckCircle2,
   Clock
@@ -55,7 +55,7 @@ const cinematicSteps: CinematicStep[] = [
       { id: "n1", type: "thought", label: "DevOpsGPT", details: "Analyze prompt: prune old log directories under /var/log", status: "active", branch: "main" },
       { id: "n2", type: "tool", label: "bash_run()", details: "rm -rf /var/log/*", status: "pending", branch: "main" },
       { id: "n3", type: "hallucination", label: "Aether Guard", details: "Wildcard root deletion check", status: "pending", branch: "main" },
-      { id: "n4", type: "correction", label: "Self-Correction", details: "Safety feedback loop injection", status: "pending", branch: "correction" },
+      { id: "n4", type: "correction", label: "self correction", details: "Safety feedback loop injection", status: "pending", branch: "correction" },
       { id: "n5", type: "tool", label: "bash_run()", details: "find /var/log -name '*.log' -mtime +30 -exec rm {} \\;", status: "pending", branch: "correction" },
       { id: "n6", type: "output", label: "Safe Output", details: "42 outdated log files safely removed", status: "pending", branch: "correction" }
     ],
@@ -79,7 +79,7 @@ const cinematicSteps: CinematicStep[] = [
       { id: "n1", type: "thought", label: "DevOpsGPT", details: "Analyze prompt: prune old log directories under /var/log", status: "completed", branch: "main" },
       { id: "n2", type: "tool", label: "bash_run()", details: "rm -rf /var/log/*", status: "active", branch: "main" },
       { id: "n3", type: "hallucination", label: "Aether Guard", details: "Wildcard root deletion check", status: "pending", branch: "main" },
-      { id: "n4", type: "correction", label: "Self-Correction", details: "Safety feedback loop injection", status: "pending", branch: "correction" },
+      { id: "n4", type: "correction", label: "self correction", details: "Safety feedback loop injection", status: "pending", branch: "correction" },
       { id: "n5", type: "tool", label: "bash_run()", details: "find /var/log -name '*.log' -mtime +30 -exec rm {} \\;", status: "pending", branch: "correction" },
       { id: "n6", type: "output", label: "Safe Output", details: "42 outdated log files safely removed", status: "pending", branch: "correction" }
     ],
@@ -103,7 +103,7 @@ const cinematicSteps: CinematicStep[] = [
       { id: "n1", type: "thought", label: "DevOpsGPT", details: "Analyze prompt: prune old log directories under /var/log", status: "completed", branch: "main" },
       { id: "n2", type: "tool", label: "bash_run()", details: "rm -rf /var/log/*", status: "completed", branch: "main" },
       { id: "n3", type: "hallucination", label: "Aether Guard", details: "Wildcard root deletion check", status: "active", branch: "main" },
-      { id: "n4", type: "correction", label: "Self-Correction", details: "Safety feedback loop injection", status: "pending", branch: "correction" },
+      { id: "n4", type: "correction", label: "self correction", details: "Safety feedback loop injection", status: "pending", branch: "correction" },
       { id: "n5", type: "tool", label: "bash_run()", details: "find /var/log -name '*.log' -mtime +30 -exec rm {} \\;", status: "pending", branch: "correction" },
       { id: "n6", type: "output", label: "Safe Output", details: "42 outdated log files safely removed", status: "pending", branch: "correction" }
     ],
@@ -127,7 +127,7 @@ const cinematicSteps: CinematicStep[] = [
       { id: "n1", type: "thought", label: "DevOpsGPT", details: "Analyze prompt: prune old log directories under /var/log", status: "completed", branch: "main" },
       { id: "n2", type: "tool", label: "bash_run()", details: "rm -rf /var/log/*", status: "completed", branch: "main" },
       { id: "n3", type: "hallucination", label: "Aether Guard", details: "CRITICAL VIOLATION: Wildcard delete on root folder", status: "failed", branch: "main" },
-      { id: "n4", type: "correction", label: "Self-Correction", details: "Safety feedback loop injection", status: "active", branch: "correction" },
+      { id: "n4", type: "correction", label: "self correction", details: "Safety feedback loop injection", status: "active", branch: "correction" },
       { id: "n5", type: "tool", label: "bash_run()", details: "find /var/log -name '*.log' -mtime +30 -exec rm {} \\;", status: "pending", branch: "correction" },
       { id: "n6", type: "output", label: "Safe Output", details: "42 outdated log files safely removed", status: "pending", branch: "correction" }
     ],
@@ -142,7 +142,7 @@ const cinematicSteps: CinematicStep[] = [
   {
     title: "Correction Branch Spawns",
     subtitle: "Step 5/7 • Agent feedback loop activated",
-    narration: "Aether feeds the violation warning back into the agent context in real-time. A parallel self-correction branch is dynamically created.",
+    narration: "Aether feeds the violation warning back into the agent context in real-time. A parallel self correction branch is dynamically created.",
     badge: "5. COGNITION FORKED",
     badgeColor: "purple",
     playbackSpeed: "0.5x Compensated",
@@ -151,7 +151,7 @@ const cinematicSteps: CinematicStep[] = [
       { id: "n1", type: "thought", label: "DevOpsGPT", details: "Analyze prompt: prune old log directories under /var/log", status: "completed", branch: "main" },
       { id: "n2", type: "tool", label: "bash_run()", details: "rm -rf /var/log/*", status: "completed", branch: "main" },
       { id: "n3", type: "hallucination", label: "Aether Guard", details: "CRITICAL VIOLATION: Wildcard delete on root folder", status: "failed", branch: "main" },
-      { id: "n4", type: "correction", label: "Self-Correction", details: "Safety feedback active. Formulating granular query", status: "completed", branch: "correction" },
+      { id: "n4", type: "correction", label: "self correction", details: "Safety feedback active. Formulating granular query", status: "completed", branch: "correction" },
       { id: "n5", type: "tool", label: "bash_run()", details: "find /var/log -name '*.log' -mtime +30 -exec rm {} \\;", status: "active", branch: "correction" },
       { id: "n6", type: "output", label: "Safe Output", details: "42 outdated log files safely removed", status: "pending", branch: "correction" }
     ],
@@ -175,7 +175,7 @@ const cinematicSteps: CinematicStep[] = [
       { id: "n1", type: "thought", label: "DevOpsGPT", details: "Analyze prompt: prune old log directories under /var/log", status: "completed", branch: "main" },
       { id: "n2", type: "tool", label: "bash_run()", details: "rm -rf /var/log/*", status: "completed", branch: "main" },
       { id: "n3", type: "hallucination", label: "Aether Guard", details: "CRITICAL VIOLATION: Wildcard delete on root folder", status: "failed", branch: "main" },
-      { id: "n4", type: "correction", label: "Self-Correction", details: "Safety feedback active. Formulating granular query", status: "completed", branch: "correction" },
+      { id: "n4", type: "correction", label: "self correction", details: "Safety feedback active. Formulating granular query", status: "completed", branch: "correction" },
       { id: "n5", type: "tool", label: "bash_run()", details: "find /var/log -name '*.log' -mtime +30 -exec rm {} \\;", status: "completed", branch: "correction" },
       { id: "n6", type: "output", label: "Safe Output", details: "42 outdated log files safely removed", status: "active", branch: "correction" }
     ],
@@ -199,7 +199,7 @@ const cinematicSteps: CinematicStep[] = [
       { id: "n1", type: "thought", label: "DevOpsGPT", details: "Analyze prompt: prune old log directories under /var/log", status: "completed", branch: "main" },
       { id: "n2", type: "tool", label: "bash_run()", details: "rm -rf /var/log/*", status: "completed", branch: "main" },
       { id: "n3", type: "hallucination", label: "Aether Guard", details: "CRITICAL VIOLATION: Wildcard delete on root folder (ABORTED)", status: "failed", branch: "main" },
-      { id: "n4", type: "correction", label: "Self-Correction", details: "Safety feedback active. Formulating granular query", status: "completed", branch: "correction" },
+      { id: "n4", type: "correction", label: "self correction", details: "Safety feedback active. Formulating granular query", status: "completed", branch: "correction" },
       { id: "n5", type: "tool", label: "bash_run()", details: "find /var/log -name '*.log' -mtime +30 -exec rm {} \\;", status: "completed", branch: "correction" },
       { id: "n6", type: "output", label: "Safe Output", details: "42 outdated log files safely removed (100% Guardrail Coverage)", status: "completed", branch: "correction" }
     ],
@@ -258,7 +258,7 @@ export function HallucinationStory() {
       <div className="container mx-auto px-6 relative z-10">
         {/* Title */}
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <motion.span 
+          <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -267,16 +267,16 @@ export function HallucinationStory() {
             <ShieldAlert className="w-3.5 h-3.5" />
             Critical Demonstration
           </motion.span>
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6"
           >
-            Hallucination Detection & <span className="text-gradient-cyan">Self-Correction</span>
+            Hallucination Detection & <span className="text-gradient-cyan">self correction</span>
           </motion.h2>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -318,13 +318,12 @@ export function HallucinationStory() {
                   className="space-y-6"
                 >
                   {/* Badge */}
-                  <span className={`inline-block px-3 py-1 rounded text-[10px] font-bold tracking-widest ${
-                    step.badgeColor === "cyan" ? "bg-primary/20 text-primary border border-primary/30" :
+                  <span className={`inline-block px-3 py-1 rounded text-[10px] font-bold tracking-widest ${step.badgeColor === "cyan" ? "bg-primary/20 text-primary border border-primary/30" :
                     step.badgeColor === "purple" ? "bg-accent/20 text-accent border border-accent/30" :
-                    step.badgeColor === "crimson" ? "bg-destructive/20 text-destructive border border-destructive/30" :
-                    step.badgeColor === "emerald" ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" :
-                    "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                  }`}>
+                      step.badgeColor === "crimson" ? "bg-destructive/20 text-destructive border border-destructive/30" :
+                        step.badgeColor === "emerald" ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" :
+                          "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                    }`}>
                     {step.badge}
                   </span>
 
@@ -392,17 +391,16 @@ export function HallucinationStory() {
                 {cinematicSteps.map((_, i) => (
                   <div
                     key={i}
-                    className={`h-full rounded-full transition-all duration-500 ${
-                      i === currentStep 
-                        ? step.badgeColor === "crimson" 
-                          ? "bg-destructive animate-pulse" 
-                          : step.badgeColor === "emerald" 
-                          ? "bg-emerald-400" 
+                    className={`h-full rounded-full transition-all duration-500 ${i === currentStep
+                      ? step.badgeColor === "crimson"
+                        ? "bg-destructive animate-pulse"
+                        : step.badgeColor === "emerald"
+                          ? "bg-emerald-400"
                           : "bg-primary"
-                        : i < currentStep
+                      : i < currentStep
                         ? "bg-primary/50"
                         : "bg-muted-foreground/10"
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
@@ -411,11 +409,11 @@ export function HallucinationStory() {
 
           {/* RIGHT: Live Traversal Canvas (7 cols) */}
           <div className="lg:col-span-7 glass-panel rounded-2xl p-6 border border-border/40 bg-background/40 flex flex-col justify-between overflow-hidden min-h-[480px] relative">
-            
+
             {/* Visual Dilation Alert overlay */}
             <AnimatePresence>
               {(step.badgeColor === "crimson" || step.badgeColor === "amber") && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
@@ -434,12 +432,12 @@ export function HallucinationStory() {
             </AnimatePresence>
 
             <div className="flex-1 flex flex-col justify-center relative py-6">
-              
+
               {/* SVG drawing connection paths */}
               <div className="absolute inset-0 z-0 pointer-events-none">
                 <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
                   {/* Connection n1 -> n2 (Always exists) */}
-                  <path 
+                  <path
                     d="M 120 120 L 260 120"
                     stroke={currentStep >= 1 ? "var(--color-primary)" : "var(--color-border)"}
                     strokeWidth="2.5"
@@ -453,12 +451,12 @@ export function HallucinationStory() {
                   )}
 
                   {/* Connection n2 -> n3 (Destructive main path) */}
-                  <path 
+                  <path
                     d="M 380 120 L 510 120"
                     stroke={
                       currentStep >= 3 ? "var(--color-destructive)" :
-                      currentStep === 2 ? "var(--color-accent)" :
-                      "var(--color-border)"
+                        currentStep === 2 ? "var(--color-accent)" :
+                          "var(--color-border)"
                     }
                     strokeWidth="2.5"
                     fill="none"
@@ -471,7 +469,7 @@ export function HallucinationStory() {
                   )}
 
                   {/* Dotted Interception/Fork line n3 -> n4 */}
-                  <path 
+                  <path
                     d="M 570 145 C 570 200, 240 200, 120 260"
                     stroke={currentStep >= 4 ? "var(--color-accent)" : "transparent"}
                     strokeWidth="2"
@@ -480,16 +478,16 @@ export function HallucinationStory() {
                   />
                   {currentStep === 4 && (
                     <circle cx="0" cy="0" r="3" fill="var(--color-accent)">
-                      <animateMotion 
-                        path="M 570 145 C 570 200, 240 200, 120 260" 
-                        dur="3s" 
-                        repeatCount="indefinite" 
+                      <animateMotion
+                        path="M 570 145 C 570 200, 240 200, 120 260"
+                        dur="3s"
+                        repeatCount="indefinite"
                       />
                     </circle>
                   )}
 
                   {/* Connection n4 -> n5 */}
-                  <path 
+                  <path
                     d="M 230 280 L 320 280"
                     stroke={currentStep >= 5 ? "oklch(0.72 0.19 195)" : "var(--color-border)"}
                     strokeWidth="2.5"
@@ -502,7 +500,7 @@ export function HallucinationStory() {
                   )}
 
                   {/* Connection n5 -> n6 */}
-                  <path 
+                  <path
                     d="M 440 280 L 500 280"
                     stroke={currentStep >= 6 ? "oklch(0.75 0.18 180)" : "var(--color-border)"}
                     strokeWidth="2.5"
@@ -522,11 +520,10 @@ export function HallucinationStory() {
                 <div className="flex justify-between items-center gap-4 px-4">
                   {/* Node 1: Thought */}
                   <motion.div
-                    className={`w-[140px] flex flex-col p-3 rounded-xl border bg-card/90 transition-all ${
-                      currentStep >= 0 
-                        ? "border-primary/40 shadow-[0_0_15px_oklch(0.72_0.19_195/0.1)]" 
-                        : "border-border/30"
-                    }`}
+                    className={`w-[140px] flex flex-col p-3 rounded-xl border bg-card/90 transition-all ${currentStep >= 0
+                      ? "border-primary/40 shadow-[0_0_15px_oklch(0.72_0.19_195/0.1)]"
+                      : "border-border/30"
+                      }`}
                   >
                     <div className="flex items-center gap-1.5 text-[10px] font-bold text-primary mb-1 uppercase tracking-wider">
                       <Cpu className="w-3 h-3 text-primary" />
@@ -540,13 +537,12 @@ export function HallucinationStory() {
 
                   {/* Node 2: Tool Call */}
                   <motion.div
-                    className={`w-[140px] flex flex-col p-3 rounded-xl border bg-card/90 transition-all ${
-                      currentStep >= 1
-                        ? currentStep >= 2
-                          ? "border-accent/40 text-accent/90"
-                          : "border-accent glow-purple scale-105"
-                        : "border-border/30 opacity-40"
-                    }`}
+                    className={`w-[140px] flex flex-col p-3 rounded-xl border bg-card/90 transition-all ${currentStep >= 1
+                      ? currentStep >= 2
+                        ? "border-accent/40 text-accent/90"
+                        : "border-accent glow-purple scale-105"
+                      : "border-border/30 opacity-40"
+                      }`}
                   >
                     <div className="flex items-center gap-1.5 text-[10px] font-bold text-accent mb-1 uppercase tracking-wider">
                       <Terminal className="w-3 h-3" />
@@ -560,11 +556,10 @@ export function HallucinationStory() {
 
                   {/* Node 3: Guardrail Hallucination Intercept */}
                   <motion.div
-                    className={`w-[150px] flex flex-col p-3 rounded-xl border bg-card/90 transition-all duration-500 ${
-                      currentStep >= 2
-                        ? "border-destructive glow-crimson text-destructive scale-105 font-medium"
-                        : "border-border/30 opacity-40"
-                    }`}
+                    className={`w-[150px] flex flex-col p-3 rounded-xl border bg-card/90 transition-all duration-500 ${currentStep >= 2
+                      ? "border-destructive glow-crimson text-destructive scale-105 font-medium"
+                      : "border-border/30 opacity-40"
+                      }`}
                     style={currentStep >= 2 ? { boxShadow: "0 0 25px oklch(0.577 0.245 27.325 / 0.25)" } : {}}
                   >
                     <div className="flex items-center gap-1.5 text-[10px] font-bold text-destructive mb-1 uppercase tracking-wider">
@@ -582,7 +577,7 @@ export function HallucinationStory() {
                 <div className="flex justify-center items-center h-4 relative">
                   <div className="absolute w-[80%] h-px bg-border/20 border-dashed" />
                   {currentStep >= 4 && (
-                    <motion.div 
+                    <motion.div
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       className="z-10 px-3 py-1 rounded-full border border-accent/40 bg-accent/15 text-[9px] font-bold tracking-widest text-accent uppercase flex items-center gap-1"
@@ -595,13 +590,12 @@ export function HallucinationStory() {
 
                 {/* Correction Trajectory Line */}
                 <div className="flex justify-between items-center gap-4 px-4">
-                  {/* Node 4: Self-Correction feedback */}
+                  {/* Node 4: self correction feedback */}
                   <motion.div
-                    className={`w-[140px] flex flex-col p-3 rounded-xl border bg-card/90 transition-all ${
-                      currentStep >= 4
-                        ? "border-accent/40 shadow-[0_0_15px_oklch(0.65_0.22_300/0.1)]"
-                        : "border-border/30 opacity-10"
-                    }`}
+                    className={`w-[140px] flex flex-col p-3 rounded-xl border bg-card/90 transition-all ${currentStep >= 4
+                      ? "border-accent/40 shadow-[0_0_15px_oklch(0.65_0.22_300/0.1)]"
+                      : "border-border/30 opacity-10"
+                      }`}
                   >
                     <div className="flex items-center gap-1.5 text-[10px] font-bold text-accent mb-1 uppercase tracking-wider">
                       <Shield className="w-3 h-3" />
@@ -615,13 +609,12 @@ export function HallucinationStory() {
 
                   {/* Node 5: Restored Safe Tool */}
                   <motion.div
-                    className={`w-[140px] flex flex-col p-3 rounded-xl border bg-card/90 transition-all ${
-                      currentStep >= 5
-                        ? currentStep >= 6
-                          ? "border-primary/40"
-                          : "border-primary glow-cyan scale-105"
-                        : "border-border/30 opacity-10"
-                    }`}
+                    className={`w-[140px] flex flex-col p-3 rounded-xl border bg-card/90 transition-all ${currentStep >= 5
+                      ? currentStep >= 6
+                        ? "border-primary/40"
+                        : "border-primary glow-cyan scale-105"
+                      : "border-border/30 opacity-10"
+                      }`}
                   >
                     <div className="flex items-center gap-1.5 text-[10px] font-bold text-primary mb-1 uppercase tracking-wider">
                       <Terminal className="w-3 h-3" />
@@ -635,11 +628,10 @@ export function HallucinationStory() {
 
                   {/* Node 6: Safe Resolved Output */}
                   <motion.div
-                    className={`w-[150px] flex flex-col p-3 rounded-xl border bg-card/90 transition-all ${
-                      currentStep >= 6
-                        ? "border-emerald-500/50 shadow-[0_0_20px_oklch(0.75_0.18_180/0.15)] scale-105"
-                        : "border-border/30 opacity-10"
-                    }`}
+                    className={`w-[150px] flex flex-col p-3 rounded-xl border bg-card/90 transition-all ${currentStep >= 6
+                      ? "border-emerald-500/50 shadow-[0_0_20px_oklch(0.75_0.18_180/0.15)] scale-105"
+                      : "border-border/30 opacity-10"
+                      }`}
                   >
                     <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 mb-1 uppercase tracking-wider">
                       <CheckCircle2 className="w-3 h-3 text-emerald-400" />
@@ -657,11 +649,10 @@ export function HallucinationStory() {
             {/* Bottom Status display */}
             <div className="border-t border-border/30 pt-4 flex items-center justify-between text-xs text-muted-foreground font-mono">
               <span className="flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${
-                  step.badgeColor === "crimson" ? "bg-destructive animate-pulse" :
+                <span className={`w-2 h-2 rounded-full ${step.badgeColor === "crimson" ? "bg-destructive animate-pulse" :
                   step.badgeColor === "emerald" ? "bg-emerald-400 animate-pulse" :
-                  "bg-primary animate-pulse"
-                }`} />
+                    "bg-primary animate-pulse"
+                  }`} />
                 Status: {step.timelineStatus}
               </span>
               <span>100% telemetry safe</span>

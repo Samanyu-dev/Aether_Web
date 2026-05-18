@@ -154,7 +154,7 @@ export function LocalFirstShowcase() {
             </p>
           </div>
 
-          <div className="font-mono text-[10px] leading-relaxed text-muted-foreground bg-background/60 p-4 rounded-xl border border-border/30 w-full md:w-auto shrink-0 select-none">
+          <pre className="font-mono text-[10px] leading-relaxed text-muted-foreground bg-background/60 p-4 rounded-xl border border-border/30 w-full md:w-auto shrink-0 select-none whitespace-pre-wrap">
             <span className="text-accent">~ project-root/</span>{"\n"}
             <span>├── <span className="text-primary font-bold">.aether/</span></span>{"\n"}
             <span>│   ├── <span className="text-primary">traces/</span></span>{"\n"}
@@ -163,7 +163,7 @@ export function LocalFirstShowcase() {
             <span>│   ├── <span className="text-primary">sessions/</span></span>{"\n"}
             <span>│   └── <span className="text-primary">cache/</span></span>{"\n"}
             <span>└── main.py</span>
-          </div>
+          </pre>
         </motion.div>
 
       </div>

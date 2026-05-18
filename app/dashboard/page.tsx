@@ -292,6 +292,117 @@ export default function DashboardPage() {
         </div>
       </nav>
 
+      {/* Platform Analytics Dashboard Command Center */}
+      <div className="max-w-7xl mx-auto px-6 mt-8">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 pb-4 border-b border-border/10">
+          <div>
+            <h1 className="text-xl font-bold font-mono text-white flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              Observability Command Center
+            </h1>
+            <p className="text-xs text-muted-foreground mt-1">Real-time LLM telemetry streams, trace capacities, and reasoning metrics</p>
+          </div>
+          <div className="flex items-center gap-3 mt-3 md:mt-0 bg-[#09090f] border border-border/30 rounded-xl px-3 py-1.5 font-mono text-[10px] text-muted-foreground">
+            <span>Daemon IPC: <span className="text-emerald-400 font-bold">127.0.0.1:8000</span></span>
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+          </div>
+        </div>
+
+        {/* 4-Stat Metric Cards Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          
+          {/* Card 1: Plan */}
+          <div className="glass-panel bg-card/10 border border-border/30 rounded-xl p-4 flex items-center justify-between relative overflow-hidden group hover:border-primary/45 transition-colors">
+            <div className="space-y-1 relative z-10">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Current Plan</span>
+              <h3 className="text-base font-bold text-white font-mono">Developer Beta</h3>
+              <p className="text-[9px] text-primary/80 font-mono">Early Access License</p>
+            </div>
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
+              <Layers className="w-5 h-5" />
+            </div>
+          </div>
+
+          {/* Card 2: Local Connection */}
+          <div className="glass-panel bg-card/10 border border-border/30 rounded-xl p-4 flex items-center justify-between relative overflow-hidden group hover:border-accent/45 transition-colors">
+            <div className="space-y-1 relative z-10">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Local Agent Connected</span>
+              <h3 className="text-base font-bold text-white font-mono flex items-center gap-1.5">
+                Active 
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              </h3>
+              <p className="text-[9px] text-accent/80 font-mono">Unix socket port 8000</p>
+            </div>
+            <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent group-hover:scale-105 transition-transform">
+              <CloudLightning className="w-5 h-5 animate-bounce" />
+            </div>
+          </div>
+
+          {/* Card 3: Storage */}
+          <div className="glass-panel bg-card/10 border border-border/30 rounded-xl p-4 flex items-center justify-between relative overflow-hidden group hover:border-primary/45 transition-colors">
+            <div className="space-y-1 relative z-10">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Sync Storage</span>
+              <h3 className="text-base font-bold text-white font-mono">1.4 MB / 5.0 MB</h3>
+              <p className="text-[9px] text-primary/80 font-mono">7.2 MB local cache offline</p>
+            </div>
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
+              <FolderOpen className="w-5 h-5" />
+            </div>
+          </div>
+
+          {/* Card 4: Replay Launches */}
+          <div className="glass-panel bg-card/10 border border-border/30 rounded-xl p-4 flex items-center justify-between relative overflow-hidden group hover:border-accent/45 transition-colors">
+            <div className="space-y-1 relative z-10">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Replay Launches</span>
+              <h3 className="text-base font-bold text-white font-mono">48 Sessions</h3>
+              <p className="text-[9px] text-accent/80 font-mono">24 active local listeners</p>
+            </div>
+            <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent group-hover:scale-105 transition-transform">
+              <Terminal className="w-5 h-5" />
+            </div>
+          </div>
+
+        </div>
+
+        {/* Dynamic Activity bar chart */}
+        <div className="glass-panel bg-card/10 border border-border/30 rounded-xl p-5 mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center gap-2">
+              <Database className="w-4 h-4 text-primary animate-pulse" />
+              <h4 className="text-xs font-bold font-mono uppercase tracking-wider text-white">LLM Reasoning Ingestion Activity</h4>
+            </div>
+            <span className="text-[9px] font-mono text-muted-foreground">Updates live (60fps)</span>
+          </div>
+
+          {/* Styled chart bars representation */}
+          <div className="flex items-end justify-between gap-2 h-20 pt-4 px-2 border-b border-border/20">
+            {[45, 80, 55, 30, 95, 70, 40, 60, 85, 50, 75, 90, 65, 35, 80, 55].map((val, idx) => (
+              <div key={idx} className="flex-1 group relative flex justify-center">
+                <div 
+                  className={`w-full rounded-t transition-all duration-500 hover:scale-x-110 ${
+                    val > 75 
+                      ? "bg-destructive/60 hover:bg-destructive" 
+                      : val > 50 
+                      ? "bg-accent/60 hover:bg-accent" 
+                      : "bg-primary/60 hover:bg-primary"
+                  }`} 
+                  style={{ height: `${val}%` }} 
+                />
+                {/* Popover value */}
+                <span className="absolute bottom-full mb-1 hidden group-hover:block bg-[#08080f] border border-border/40 text-[8px] font-mono text-white px-1.5 py-0.5 rounded shadow-xl pointer-events-none">
+                  {val}% Confidence
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-between text-[8px] font-mono text-muted-foreground mt-2 px-1">
+            <span>2 hours ago</span>
+            <span>1 hour ago</span>
+            <span>Just now</span>
+          </div>
+        </div>
+      </div>
+
       {/* Main Container Layout */}
       <div className="max-w-7xl mx-auto px-6 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         
@@ -429,13 +540,14 @@ export default function DashboardPage() {
               </button>
             </div>
 
-            <pre className="p-3 bg-black/40 border border-border/10 rounded-lg text-[10px] font-mono text-muted-foreground overflow-x-auto">
-              <div><span className="text-primary">from</span> aether <span className="text-primary">import</span> AgentTracer</div>
-              <div className="text-muted-foreground mt-1.5"># Initialize tracer session</div>
-              <div>tracer = AgentTracer(session=<span className="text-emerald-400">"agent_1"</span>)</div>
-              <div className="text-muted-foreground mt-1.5"># Track decision points</div>
-              <div>tracer.log_thought(<span className="text-emerald-400">"Query vectorDB"</span>)</div>
-              <div>tracer.log_tool(<span className="text-emerald-400">"web_search"</span>, query=<span className="text-emerald-400">"..."</span>)</div>
+            <pre className="p-3 bg-black/40 border border-border/10 rounded-lg text-[10px] font-mono text-muted-foreground overflow-x-auto leading-normal">
+              <div><span className="text-primary">from</span> aether <span className="text-primary">import</span> AetherTracer</div>
+              <div className="text-muted-foreground mt-1"># Setup minimal logger</div>
+              <div>tracer = AetherTracer(agent_name=<span className="text-emerald-400">"research-agent"</span>)</div>
+              <div className="text-muted-foreground mt-1.5"># Log thoughts, tools, and results</div>
+              <div>tracer.thought(<span className="text-emerald-400">"Planning approach"</span>)</div>
+              <div>tracer.tool(<span className="text-emerald-400">"web_search"</span>, query=<span className="text-emerald-400">"best fine tuning methods"</span>)</div>
+              <div>tracer.result(<span className="text-emerald-400">"Retrieved 5 papers"</span>)</div>
             </pre>
           </div>
 

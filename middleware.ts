@@ -2,14 +2,14 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 export function middleware(request: NextRequest) {
-  // Check for real Supabase session cookies or our local-first simulated session cookie
+  // Check for real Supabase session cookies or our local first simulated session cookie
   const hasSupabaseCookie = request.cookies.getAll().some(
     (c) => c.name.startsWith("sb-") || c.name.includes("supabase")
   )
   const hasSimulatedCookie = request.cookies.has("aether_session_active")
-  
+
   const isAuthenticated = hasSupabaseCookie || hasSimulatedCookie
-  
+
   const isDashboardRoute = request.nextUrl.pathname.startsWith("/dashboard")
   const isAuthRoute = request.nextUrl.pathname === "/auth"
 

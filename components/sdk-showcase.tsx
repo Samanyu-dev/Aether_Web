@@ -18,23 +18,15 @@ import {
 import { Button } from "@/components/ui/button"
 
 const codeExamples = {
-  openai: `from aether import AgentTracer
+  openai: `from aether import AetherTracer
 
-# Initialize visual local tracer
-tracer = AgentTracer(project="devops-assistant")
+# Initialize minimal reasoning logger
+tracer = AetherTracer(agent_name="research-agent")
 
-with tracer.session("log-pruner") as session:
-    # 1. Register starting reasoning node
-    root = session.thought("Analyzing log directory scope under /var/log")
-    
-    # 2. Trace tool call
-    session.tool_call(
-        tool_name="bash_run",
-        args={"command": "find /var/log -name '*.log' -mtime +30"}
-    )
-    
-    # 3. Yield output node
-    session.system("Pruning complete. 42 files swept.")`,
+# Log sequential thoughts, tool calls, and results
+tracer.thought("Planning approach")
+tracer.tool("web_search", query="best fine tuning methods")
+tracer.result("Retrieved 5 papers")`,
   langchain: `from aether.integrations import LangChainTracer
 from langchain.agents import AgentExecutor
 

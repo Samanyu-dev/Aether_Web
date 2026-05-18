@@ -21,9 +21,9 @@ export function HeroSection() {
       {/* Premium dark-mode radial gradients */}
       <div className="absolute inset-0 bg-gradient-radial-cyan opacity-[0.15] z-0 pointer-events-none" />
       <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] bg-gradient-radial-purple opacity-[0.08] z-0 pointer-events-none" />
-      
+
       {/* Apple-style background grid pattern */}
-      <div 
+      <div
         className="absolute inset-0 opacity-[0.02] z-0 pointer-events-none"
         style={{
           backgroundImage: `linear-gradient(oklch(0.72 0.19 195 / 0.5) 1px, transparent 1px),
@@ -34,7 +34,7 @@ export function HeroSection() {
 
       <div className="container mx-auto px-6 py-16 relative z-10">
         <div className="grid lg:grid-cols-12 gap-12 items-center">
-          
+
           {/* LEFT: Headline, subheadline, copyable pip command, CTAs (7 cols on large screens for ample text breathing room) */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -54,7 +54,7 @@ export function HeroSection() {
             </motion.div>
 
             {/* Main Hero Headline - See AI reasoning unfold visually */}
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
@@ -71,7 +71,7 @@ export function HeroSection() {
               transition={{ delay: 0.4, duration: 0.8 }}
               className="text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed text-balance"
             >
-              Replay thoughts, tool calls, hallucinations, and self-correction like source code execution. Aether is a lightweight, zero-dependency, local-first cognition replay engine.
+              Replay thoughts, tool calls, hallucinations, and self correction like source code execution. Aether is a lightweight, zero dependency, local-first cognition replay engine.
             </motion.p>
 
             {/* Inline Copyable CLI Terminal Command - pip install aether-observe */}
@@ -118,7 +118,7 @@ export function HeroSection() {
                   Launch Hallucination Replay
                 </Button>
               </a>
-              
+
               <a href="#sdk">
                 <Button size="lg" variant="outline" className="border-border/60 hover:border-primary/40 hover:bg-primary/5 text-sm px-6 py-6 font-semibold uppercase tracking-wider">
                   Install SDK
@@ -166,7 +166,7 @@ export function HeroSection() {
             {/* The Live Reconstructed Visualizer Mock */}
             <div className="relative rounded-3xl overflow-hidden glass-panel p-2 bg-card/40 border border-border/50">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 rounded-3xl" />
-              
+
               {/* Header inside mockup */}
               <div className="flex items-center justify-between px-4 py-2 border-b border-border/30 mb-2">
                 <div className="flex items-center gap-1.5">
@@ -183,7 +183,7 @@ export function HeroSection() {
               {/* DAG Canvas */}
               <CognitionDAG />
             </div>
-            
+
             {/* Floating Live Event Stream Sidebar Overlay */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
