@@ -42,6 +42,8 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
+import { CursorGlow } from '@/components/cursor-glow'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -50,6 +52,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${geistMono.variable} bg-background`}>
       <body className="font-sans antialiased">
+        <CursorGlow />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

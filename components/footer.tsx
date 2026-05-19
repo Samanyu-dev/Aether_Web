@@ -22,8 +22,8 @@ const footerLinks = {
     { label: "Contact", href: "#" },
   ],
   community: [
-    { label: "GitHub", href: "https://github.com/Samanyu-dev/Aether_Web" },
-    { label: "Issue Tracker", href: "https://github.com/Samanyu-dev/Aether_Web/issues" },
+    { label: "GitHub", href: "https://github.com/Samanyu-dev/Aether" },
+    { label: "Issue Tracker", href: "https://github.com/Samanyu-dev/Aether/issues" },
     { label: "Twitter", href: "#" },
     { label: "YouTube", href: "#" },
   ],
@@ -56,7 +56,7 @@ export function Footer() {
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                 </svg>
               </a>
-              <a href="https://github.com/Samanyu-dev/Aether_Web/issues" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" title="Report Issues">
+              <a href="https://github.com/Samanyu-dev/Aether/issues" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" title="Report Issues">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>

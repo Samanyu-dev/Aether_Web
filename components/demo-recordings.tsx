@@ -1,8 +1,10 @@
 "use client"
-
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { Play, ShieldCheck, Terminal, Layers } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { StoryReplayGraph } from "@/components/story-replay-graph"
 
 const stories = [
   {
@@ -85,6 +87,8 @@ const typeDots = {
 }
 
 export function DemoRecordings() {
+  const [activeStory, setActiveStory] = useState<typeof stories[0] | null>(null)
+
   return (
     <section className="py-24 relative overflow-hidden bg-background border-t border-border/10" id="replay-stories">
       {/* Background gradients */}
@@ -192,11 +196,9 @@ export function DemoRecordings() {
                     {story.summary}
                   </div>
 
-                  <a href="#replay">
-                    <Button variant="outline" className="w-full text-xs border-border/50 hover:border-primary/50 hover:bg-primary/5 font-semibold uppercase tracking-wider">
+                  <Button variant="outline" className="w-full text-xs border-border/50 hover:border-primary/50 hover:bg-primary/5 font-semibold uppercase tracking-wider" onClick={() => setActiveStory(story)}>
                       <Play className="w-3 h-3 mr-2" /> Launch Story Replay
-                    </Button>
-                  </a>
+                  </Button>
                 </div>
               </div>
 
@@ -205,6 +207,19 @@ export function DemoRecordings() {
         </div>
 
       </div>
+      <Dialog open={!!activeStory} onOpenChange={(open) => !open && setActiveStory(null)}>
+        <DialogContent className="max-w-5xl bg-[#06060c] border-border/30 p-0 overflow-hidden" showCloseButton={true}>
+          <DialogHeader className="px-6 py-4 border-b border-border/20 bg-card/40">
+            <DialogTitle className="text-xl font-bold flex items-center gap-3">
+              <ShieldCheck className="w-5 h-5 text-primary" />
+              {activeStory?.title}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="p-0">
+            {activeStory && <StoryReplayGraph story={activeStory} />}
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   )
 }

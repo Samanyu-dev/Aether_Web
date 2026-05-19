@@ -165,9 +165,7 @@ export default function DocsPage() {
           {/* Left: Brand */}
           <div className="flex items-center gap-6">
             <a href="/" className="flex items-center gap-2.5 group">
-              <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-black font-extrabold text-xs shadow-[0_0_15px_oklch(0.72_0.19_195_/_0.3)]">
-                A
-              </span>
+              <img src="/logo.png" alt="Aether Logo" className="w-6 h-6 object-contain transition-transform duration-300 group-hover:scale-110" />
               <span className="font-mono text-sm font-black tracking-widest text-white group-hover:text-primary transition-colors">
                 AETHER
               </span>

@@ -33,9 +33,7 @@ export function Navigation() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center relative bg-white/5 border border-white/10 group-hover:border-primary/40 group-hover:shadow-[0_0_15px_oklch(0.72_0.19_195_/_0.2)] transition-all duration-300">
-                <img src="/logo.png" alt="Aether Logo" className="w-6 h-6 object-contain" />
-              </div>
+              <img src="/logo.png" alt="Aether Logo" className="w-8 h-8 object-contain transition-transform duration-300 group-hover:scale-110" />
               <span className="text-lg font-bold text-foreground font-mono">Aether</span>
             </Link>
 
@@ -57,7 +55,7 @@ export function Navigation() {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={() => window.open("https://github.com/Samanyu-dev/Aether_Web", "_blank")}
+                onClick={() => window.open("https://github.com/Samanyu-dev/Aether", "_blank")}
                 className="text-muted-foreground hover:text-foreground font-mono"
               >
                 <svg className="w-4 h-4 mr-2 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

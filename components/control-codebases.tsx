@@ -213,49 +213,49 @@ const initialEdges: Edge[] = [
     id: "e-root-b1", 
     source: "root", 
     target: "branch1", 
-    type: "default",
+    type: "smoothstep",
     style: { stroke: "oklch(0.72 0.19 195 / 0.15)", strokeWidth: 1.5 } 
   },
   { 
     id: "e-root-b2", 
     source: "root", 
     target: "branch2", 
-    type: "default",
+    type: "smoothstep",
     style: { stroke: "oklch(0.72 0.19 195 / 0.15)", strokeWidth: 1.5 } 
   },
   { 
     id: "e-root-b3", 
     source: "root", 
     target: "branch3", 
-    type: "default",
+    type: "smoothstep",
     style: { stroke: "oklch(0.72 0.19 195 / 0.15)", strokeWidth: 1.5 } 
   },
   { 
     id: "e-root-b4", 
     source: "root", 
     target: "branch4", 
-    type: "default",
+    type: "smoothstep",
     style: { stroke: "oklch(0.72 0.19 195 / 0.25)", strokeWidth: 1.5 } 
   },
   { 
     id: "e-root-b5", 
     source: "root", 
     target: "branch5", 
-    type: "default",
+    type: "smoothstep",
     style: { stroke: "oklch(0.72 0.19 195 / 0.1)", strokeWidth: 1.5 } 
   },
   { 
     id: "e-root-b6", 
     source: "root", 
     target: "branch6", 
-    type: "default",
+    type: "smoothstep",
     style: { stroke: "oklch(0.72 0.19 195 / 0.1)", strokeWidth: 1.5 } 
   },
   { 
     id: "e-root-b7", 
     source: "root", 
     target: "branch7", 
-    type: "default",
+    type: "smoothstep",
     animated: true,
     style: { stroke: "oklch(0.72 0.19 195 / 0.8)", strokeWidth: 2.5 } 
   },
@@ -263,7 +263,7 @@ const initialEdges: Edge[] = [
     id: "e-root-b8", 
     source: "root", 
     target: "branch8", 
-    type: "default",
+    type: "smoothstep",
     animated: true,
     style: { stroke: "oklch(0.72 0.19 195 / 0.8)", strokeWidth: 2.5 } 
   },
