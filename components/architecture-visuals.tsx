@@ -60,7 +60,7 @@ export function ArchitectureVisuals() {
         <div className="absolute bottom-1/3 left-1/4 w-[400px] h-[400px] bg-gradient-radial-cyan opacity-[0.05]" />
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="site-container relative z-10">
 
         {/* Title */}
         <div className="max-w-3xl mx-auto text-center mb-20">

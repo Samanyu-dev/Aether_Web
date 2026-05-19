@@ -24,7 +24,7 @@ export function FinalCTA() {
         }}
       />
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="site-container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -64,7 +64,7 @@ export function FinalCTA() {
             transition={{ delay: 0.6, duration: 0.8 }}
             className="flex flex-wrap justify-center gap-4"
           >
-            <Link href="/auth">
+            <Link href="/login">
               <Button size="lg" className="glow-cyan text-lg px-8 py-6">
                 <Play className="w-5 h-5 mr-2" />
                 Start Exploring

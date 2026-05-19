@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/navigation"
 import { HeroSection } from "@/components/hero-section"
 import { WhyExists } from "@/components/why-exists"
+import { ControlCodebases } from "@/components/control-codebases"
 import { LiveCognitionReplay } from "@/components/live-cognition-replay"
 import { HallucinationStory } from "@/components/hallucination-story"
 import { ArchitectureVisuals } from "@/components/architecture-visuals"
@@ -22,6 +23,8 @@ export default function Home() {
 
       {/* 1.5 Why Aether Exists Section */}
       <WhyExists />
+      {/* 1.6 Control Complex Codebases Section */}
+      <ControlCodebases />
 
       {/* 2. Live Replay Preview (Interactive Walkthrough) */}
       <LiveCognitionReplay />

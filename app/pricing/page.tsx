@@ -23,7 +23,7 @@ const tiers = [
       "Community support",
     ],
     cta: "Start Free Locally",
-    href: "/auth",
+    href: "/signup",
     highlight: false,
     glowClass: "hover:border-primary/50",
   },
@@ -39,10 +39,10 @@ const tiers = [
       "Up to 200 nodes per trace",
       "E2E Encrypted shared replay links",
       "Agent loop & exit-code warnings",
-      "Priority Discord support",
+      "Priority Developer Support",
     ],
     cta: "Join Pro Beta",
-    href: "/auth",
+    href: "/signup",
     highlight: true,
     glowClass: "border-primary glow-cyan scale-105",
   },
@@ -78,7 +78,7 @@ export default function PricingPage() {
         <div className="absolute bottom-[20%] right-[10%] w-[600px] h-[600px] bg-gradient-radial-purple opacity-[0.06]" />
       </div>
 
-      <div className="container mx-auto px-6 pt-32 pb-20 relative z-10 flex-grow">
+      <div className="site-container pt-32 pb-20 relative z-10 flex-grow">
         
         {/* Header */}
         <div className="max-w-3xl mx-auto text-center mb-16">

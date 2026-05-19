@@ -22,8 +22,8 @@ const footerLinks = {
     { label: "Contact", href: "#" },
   ],
   community: [
-    { label: "GitHub", href: "#" },
-    { label: "Discord", href: "#" },
+    { label: "GitHub", href: "https://github.com/Samanyu-dev/Aether_Web" },
+    { label: "Issue Tracker", href: "https://github.com/Samanyu-dev/Aether_Web/issues" },
     { label: "Twitter", href: "#" },
     { label: "YouTube", href: "#" },
   ],
@@ -32,15 +32,13 @@ const footerLinks = {
 export function Footer() {
   return (
     <footer className="border-t border-border/30 bg-card/30">
-      <div className="container mx-auto px-6 py-16">
+      <div className="site-container py-16">
         <div className="grid md:grid-cols-6 gap-12">
           {/* Brand */}
           <div className="md:col-span-2">
-            <a href="#" className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                <svg className="w-5 h-5 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
+            <a href="#" className="flex items-center gap-3 mb-4 group">
+              <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center relative bg-white/5 border border-white/10 group-hover:border-primary/40 group-hover:shadow-[0_0_15px_oklch(0.72_0.19_195_/_0.2)] transition-all duration-300">
+                <img src="/logo.png" alt="Aether Logo" className="w-6 h-6 object-contain" />
               </div>
               <span className="text-lg font-bold text-foreground">Aether</span>
             </a>
@@ -58,9 +56,9 @@ export function Footer() {
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                 </svg>
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z" />
+              <a href="https://github.com/Samanyu-dev/Aether_Web/issues" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" title="Report Issues">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </a>
             </div>

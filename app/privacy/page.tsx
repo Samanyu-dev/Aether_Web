@@ -15,7 +15,7 @@ export default function PrivacyPage() {
         <div className="absolute bottom-[20%] left-[10%] w-[500px] h-[500px] bg-gradient-radial-purple opacity-[0.04]" />
       </div>
 
-      <div className="container mx-auto px-6 pt-36 pb-20 relative z-10 flex-grow max-w-3xl">
+      <div className="site-container pt-36 pb-20 relative z-10 flex-grow max-w-3xl">
         <div className="space-y-8">
           
           {/* Header */}

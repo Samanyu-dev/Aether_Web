@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 export function VSCodePreview() {
   return (
     <section className="py-24 relative overflow-hidden">
-      <div className="container mx-auto px-6">
+      <div className="site-container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

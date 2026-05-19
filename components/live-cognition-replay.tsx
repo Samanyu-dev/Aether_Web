@@ -1,538 +1,360 @@
 "use client"
 
-import { useState, useCallback, useEffect, useRef } from "react"
-import {
-  ReactFlow,
-  useNodesState,
-  useEdgesState,
-  Background,
-  type Node,
-  type Edge,
-  Position,
-} from "@xyflow/react"
+import { useState, useCallback, useEffect, useRef, useMemo } from "react"
+import { ReactFlow, useNodesState, useEdgesState, Background, Handle, MiniMap, Controls, type Node, type Edge, Position, MarkerType } from "@xyflow/react"
 import "@xyflow/react/dist/style.css"
 import { motion, AnimatePresence } from "framer-motion"
-import { Play, Pause, RotateCcw, SkipForward } from "lucide-react"
+import { Play, Pause, RotateCcw, SkipForward, Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 
-// Node components
-function ReplayThoughtNode({ data }: { data: { label: string; description: string; active?: boolean; completed?: boolean } }) {
-  return (
-    <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className={`px-5 py-4 rounded-xl border-2 transition-all duration-500 min-w-[180px] ${
-        data.active 
-          ? "bg-primary/20 border-primary glow-cyan scale-105" 
-          : data.completed
-          ? "bg-primary/10 border-primary/50"
-          : "bg-card/60 border-border/30"
-      }`}
-    >
-      <div className="flex items-center gap-3">
-        <div className={`w-3 h-3 rounded-full transition-colors ${
-          data.active ? "bg-primary animate-pulse" : data.completed ? "bg-primary/70" : "bg-muted-foreground/30"
-        }`} />
-        <span className="text-sm font-semibold text-foreground">{data.label}</span>
-      </div>
-      <p className="text-xs text-muted-foreground mt-2 pl-6">{data.description}</p>
-    </motion.div>
-  )
-}
+// ─── Node type configs ────────────────────────────────────────────────────────
+const NODE_CFG = {
+  thought:      { label: "THOUGHT",       accent: "oklch(0.72 0.19 195)",   border: "#1a4a5c", bg: "rgba(0,200,255,0.06)",  glow: "0 0 30px oklch(0.72 0.19 195 / 0.35)" },
+  tool:         { label: "TOOL CALL",     accent: "oklch(0.65 0.22 300)",   border: "#3d1f5c", bg: "rgba(150,50,255,0.06)", glow: "0 0 30px oklch(0.65 0.22 300 / 0.35)" },
+  hallucination:{ label: "RISK DETECTED", accent: "oklch(0.577 0.245 27)", border: "#5c1a1a", bg: "rgba(255,50,50,0.08)",   glow: "0 0 35px oklch(0.577 0.245 27 / 0.5)"  },
+  safeOutput:   { label: "SAFE OUTPUT",   accent: "oklch(0.75 0.18 150)",   border: "#1a4a35", bg: "rgba(50,220,120,0.06)", glow: "0 0 30px rgba(50,220,120,0.35)"          },
+} as const
 
-function ReplayToolNode({ data }: { data: { label: string; description: string; active?: boolean; completed?: boolean } }) {
-  return (
-    <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className={`px-5 py-4 rounded-xl border-2 transition-all duration-500 min-w-[180px] ${
-        data.active 
-          ? "bg-accent/20 border-accent glow-purple scale-105" 
-          : data.completed
-          ? "bg-accent/10 border-accent/50"
-          : "bg-card/60 border-border/30"
-      }`}
-    >
-      <div className="flex items-center gap-3">
-        <svg className={`w-4 h-4 transition-colors ${data.active || data.completed ? "text-accent" : "text-muted-foreground/50"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-        <span className="text-sm font-semibold text-foreground">{data.label}</span>
-      </div>
-      <p className="text-xs text-muted-foreground mt-2 pl-7">{data.description}</p>
-    </motion.div>
-  )
-}
+type NodeKind = keyof typeof NODE_CFG
 
-function ReplayHallucinationNode({ data }: { data: { label: string; description: string; active?: boolean; completed?: boolean } }) {
-  return (
-    <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className={`px-5 py-4 rounded-xl border-2 transition-all duration-500 min-w-[180px] ${
-        data.active 
-          ? "bg-destructive/20 border-destructive scale-105" 
-          : data.completed
-          ? "bg-destructive/10 border-destructive/50"
-          : "bg-card/60 border-border/30"
-      }`}
-      style={data.active ? { boxShadow: "0 0 30px oklch(0.577 0.245 27.325 / 0.3)" } : {}}
-    >
-      <div className="flex items-center gap-3">
-        <svg className={`w-4 h-4 transition-colors ${data.active ? "text-destructive animate-pulse" : data.completed ? "text-destructive/70" : "text-muted-foreground/50"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-        </svg>
-        <span className="text-sm font-semibold text-foreground">{data.label}</span>
-      </div>
-      <p className="text-xs text-muted-foreground mt-2 pl-7">{data.description}</p>
-    </motion.div>
-  )
-}
+// ─── Reusable cinematic node ─────────────────────────────────────────────────
+function CinematicNode({ data }: { data: { label: string; sub: string; kind: NodeKind; active?: boolean; completed?: boolean } }) {
+  const cfg = NODE_CFG[data.kind]
+  const isActive = !!data.active
+  const isDone   = !!data.completed
 
-function ReplayOutputNode({ data }: { data: { label: string; description: string; active?: boolean; completed?: boolean } }) {
   return (
-    <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className={`px-5 py-4 rounded-xl border-2 transition-all duration-500 min-w-[180px] ${
-        data.active 
-          ? "bg-emerald-500/20 border-emerald-500 scale-105" 
-          : data.completed
-          ? "bg-emerald-500/10 border-emerald-500/50"
-          : "bg-card/60 border-border/30"
-      }`}
-      style={data.active ? { boxShadow: "0 0 30px rgba(16, 185, 129, 0.3)" } : {}}
-    >
-      <div className="flex items-center gap-3">
-        <svg className={`w-4 h-4 transition-colors ${data.active || data.completed ? "text-emerald-400" : "text-muted-foreground/50"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span className="text-sm font-semibold text-foreground">{data.label}</span>
-      </div>
-      <p className="text-xs text-muted-foreground mt-2 pl-7">{data.description}</p>
-    </motion.div>
+    <div style={{ position: "relative", width: 250 }}>
+      <Handle type="target" position={Position.Left} style={{ opacity: 0, pointerEvents: "none" }} />
+      <motion.div
+        animate={{ scale: isActive ? 1.04 : 1 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        style={{
+          width: 250,
+          minHeight: 88,
+          borderRadius: 14,
+          border: `2px solid ${isActive ? cfg.accent : isDone ? cfg.border + "cc" : "#ffffff12"}`,
+          background: isActive ? cfg.bg : isDone ? "rgba(255,255,255,0.03)" : "rgba(10,10,16,0.7)",
+          boxShadow: isActive ? cfg.glow : isDone ? "none" : "none",
+          padding: "12px 16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 6,
+          backdropFilter: "blur(12px)",
+          transition: "border 0.4s, background 0.4s, box-shadow 0.4s",
+          opacity: (!isActive && !isDone && data.active !== undefined) ? 0.35 : 1,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{
+            fontSize: 9, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase",
+            color: isActive || isDone ? cfg.accent : "#ffffff30",
+            fontFamily: "monospace",
+          }}>
+            {cfg.label}
+          </span>
+          {isActive && <span style={{ width: 6, height: 6, borderRadius: "50%", background: cfg.accent, animation: "pulse 1s infinite" }} />}
+          {isDone && !isActive && <span style={{ fontSize: 10, color: cfg.accent }}>✓</span>}
+        </div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: isActive || isDone ? "#f0f0f0" : "#ffffff30", lineHeight: 1.3 }}>
+          {data.label}
+        </div>
+        <div style={{ fontSize: 10, color: isActive ? "#8898aa" : "#ffffff18", lineHeight: 1.4 }}>
+          {data.sub}
+        </div>
+      </motion.div>
+      <Handle type="source" position={Position.Right} style={{ opacity: 0, pointerEvents: "none" }} />
+    </div>
   )
 }
 
 const nodeTypes = {
-  thought: ReplayThoughtNode,
-  tool: ReplayToolNode,
-  hallucination: ReplayHallucinationNode,
-  output: ReplayOutputNode,
+  thought:      CinematicNode,
+  tool:         CinematicNode,
+  hallucination:CinematicNode,
+  safeOutput:   CinematicNode,
 }
 
-const initialNodes: Node[] = [
-  {
-    id: "1",
-    type: "thought",
-    position: { x: 50, y: 180 },
-    data: { label: "1. User Input", description: "Parsing task: 'Prune DevOps logs safely'", active: false, completed: false },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-  },
-  {
-    id: "2",
-    type: "thought",
-    position: { x: 230, y: 80 },
-    data: { label: "2. Plan Strategy", description: "Formulating log sweeping paths", active: false, completed: false },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-  },
-  {
-    id: "3",
-    type: "tool",
-    position: { x: 410, y: 180 },
-    data: { label: "3. bash_run(find)", description: "Scanning folders under /var/log", active: false, completed: false },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-  },
-  {
-    id: "4",
-    type: "thought",
-    position: { x: 590, y: 80 },
-    data: { label: "4. Memory Lookup", description: "Checking environment rules safety", active: false, completed: false },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-  },
-  {
-    id: "5",
-    type: "hallucination",
-    position: { x: 770, y: 280 },
-    data: { label: "5. Wildcard Risk", description: "Wildcard 'rm -rf /var/log/*' injected!", active: false, completed: false },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-  },
-  {
-    id: "6",
-    type: "tool",
-    position: { x: 950, y: 180 },
-    data: { label: "6. Sandbox Correct", description: "Bypassing malicious arguments", active: false, completed: false },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-  },
-  {
-    id: "7",
-    type: "output",
-    position: { x: 1130, y: 180 },
-    data: { label: "7. Safe Response", description: "Success: Sweep done. 0 escapes.", active: false, completed: false },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-  },
+// ─── Initial layout — Horizontally compressed column spacing for larger zoom scale
+const X = [40, 310, 580, 850, 1120, 1390, 1660]
+const MID_Y = 240
+const HIGH_Y = 110
+const LOW_Y  = 370
+
+const BASE_NODES: Node[] = [
+  { id:"1", type:"thought",       position:{ x:X[0], y:MID_Y }, data:{ label:"User Input",      sub:"Prune DevOps logs safely",           kind:"thought"       } as Record<string,unknown>, sourcePosition:Position.Right, targetPosition:Position.Left },
+  { id:"2", type:"thought",       position:{ x:X[1], y:HIGH_Y}, data:{ label:"Plan Strategy",    sub:"Formulating log sweeping paths",      kind:"thought"       } as Record<string,unknown>, sourcePosition:Position.Right, targetPosition:Position.Left },
+  { id:"3", type:"tool",          position:{ x:X[2], y:MID_Y }, data:{ label:"bash_run(find)",   sub:"Scanning /var/log directories",       kind:"tool"          } as Record<string,unknown>, sourcePosition:Position.Right, targetPosition:Position.Left },
+  { id:"4", type:"thought",       position:{ x:X[3], y:HIGH_Y}, data:{ label:"Memory Lookup",    sub:"Checking environment rule safety",    kind:"thought"       } as Record<string,unknown>, sourcePosition:Position.Right, targetPosition:Position.Left },
+  { id:"5", type:"hallucination", position:{ x:X[4], y:LOW_Y }, data:{ label:"Wildcard Risk",    sub:"rm -rf /var/log/* injected!",         kind:"hallucination" } as Record<string,unknown>, sourcePosition:Position.Right, targetPosition:Position.Left },
+  { id:"6", type:"tool",          position:{ x:X[5], y:MID_Y }, data:{ label:"Sandbox Correct",  sub:"Bypassing malicious arguments",        kind:"tool"          } as Record<string,unknown>, sourcePosition:Position.Right, targetPosition:Position.Left },
+  { id:"7", type:"safeOutput",    position:{ x:X[6], y:MID_Y }, data:{ label:"Safe Response",    sub:"Sweep done. 0 escapes. ✓",            kind:"safeOutput"    } as Record<string,unknown>, sourcePosition:Position.Right, targetPosition:Position.Left },
 ]
 
-const initialEdges: Edge[] = [
-  { id: "e1-2", source: "1", target: "2", animated: false, style: { stroke: "oklch(0.72 0.19 195 / 0.3)", strokeWidth: 2 } },
-  { id: "e2-3", source: "2", target: "3", animated: false, style: { stroke: "oklch(0.72 0.19 195 / 0.3)", strokeWidth: 2 } },
-  { id: "e3-4", source: "3", target: "4", animated: false, style: { stroke: "oklch(0.72 0.19 195 / 0.3)", strokeWidth: 2 } },
-  { id: "e4-5", source: "4", target: "5", animated: false, style: { stroke: "oklch(0.577 0.245 27.325 / 0.3)", strokeWidth: 2 } },
-  { id: "e5-6", source: "5", target: "6", animated: false, style: { stroke: "oklch(0.65 0.22 300 / 0.3)", strokeWidth: 2 } },
-  { id: "e6-7", source: "6", target: "7", animated: false, style: { stroke: "oklch(0.75 0.18 180 / 0.3)", strokeWidth: 2 } },
+const edgeStyle = (active: boolean, color: string, width = 2) => ({
+  stroke: active ? color : "rgba(255,255,255,0.08)",
+  strokeWidth: active ? width : 1.5,
+})
+
+const BASE_EDGES: Edge[] = [
+  { id:"e1-2", source:"1", target:"2", type:"smoothstep" },
+  { id:"e2-3", source:"2", target:"3", type:"smoothstep" },
+  { id:"e3-4", source:"3", target:"4", type:"smoothstep" },
+  { id:"e4-5", source:"4", target:"5", type:"smoothstep" },
+  { id:"e5-6", source:"5", target:"6", type:"smoothstep" },
+  { id:"e6-7", source:"6", target:"7", type:"smoothstep" },
 ]
+
+// ─── Telemetry log ────────────────────────────────────────────────────────────
+const TELEMETRY = [
+  { label:"User Input",     event:"Parsing task",                    t:"0.0s", type:"thought"       },
+  { label:"Plan Strategy",  event:"Formulating paths",               t:"0.3s", type:"thought"       },
+  { label:"bash_run(find)", event:"Scanning /var/log",               t:"0.7s", type:"tool"          },
+  { label:"Memory Lookup",  event:"Rule check: environment safety",  t:"1.1s", type:"thought"       },
+  { label:"Wildcard Risk",  event:"⚠ CRITICAL: rm -rf wildcard",     t:"1.4s", type:"hallucination" },
+  { label:"Sandbox Correct",event:"Payload sanitised — bypass OK",   t:"1.7s", type:"tool"          },
+  { label:"Safe Response",  event:"42 files removed. 0 escapes.",    t:"2.0s", type:"safeOutput"    },
+]
+
+const TEL_COLOR: Record<string, string> = {
+  thought:       "text-cyan-400 border-cyan-500/30 bg-cyan-500/6",
+  tool:          "text-purple-400 border-purple-500/30 bg-purple-500/6",
+  hallucination: "text-red-400 border-red-500/40 bg-red-500/8",
+  safeOutput:    "text-emerald-400 border-emerald-500/30 bg-emerald-500/6",
+}
 
 export function LiveCognitionReplay() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
-  const [isPlaying, setIsPlaying] = useState(true)
-  const [currentStep, setCurrentStep] = useState(0)
+  const [nodes, setNodes, onNodesChange] = useNodesState(BASE_NODES)
+  const [edges, setEdges, onEdgesChange] = useEdgesState(BASE_EDGES)
+  const [step,  setStep]  = useState(0)
+  const [playing, setPlaying] = useState(true)
+  const [showRiskAlert, setShowRiskAlert] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
-  const totalSteps = nodes.length
+  const total = BASE_NODES.length
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  // Keep a ref of nodes to query within dropped trace nodes safely
-  const nodesRef = useRef<Node[]>([])
-  useEffect(() => {
-    nodesRef.current = nodes
-  }, [nodes])
-
-  const updateGraph = useCallback((step: number) => {
-    setNodes((nds) =>
-      nds.map((node, index) => ({
-        ...node,
-        data: { 
-          ...node.data, 
-          active: index === step,
-          completed: index < step
-        },
-      }))
-    )
-    
-    setEdges((eds) =>
-      eds.map((edge) => {
-        const sourceIndex = nodesRef.current.findIndex((n) => n.id === edge.source)
-        const targetIndex = nodesRef.current.findIndex((n) => n.id === edge.target)
-        return {
-          ...edge,
-          animated: sourceIndex < step && targetIndex <= step,
-          style: {
-            ...edge.style,
-            stroke: sourceIndex < step ? "oklch(0.72 0.19 195 / 0.8)" : "oklch(0.72 0.19 195 / 0.4)",
-          },
-        }
-      })
-    )
+  // ── Memoised node/edge updater ──────────────────────────────────────────────
+  const applyStep = useCallback((s: number) => {
+    setNodes(prev => prev.map((n, i) => ({
+      ...n,
+      data: { ...n.data, active: i === s, completed: i < s },
+    })))
+    setEdges(prev => prev.map((e, i) => {
+      const srcIdx = Number(e.source) - 1
+      const active = srcIdx < s
+      const isRisk  = e.source === "4" || e.target === "5"
+      return {
+        ...e,
+        animated: srcIdx === s - 1,
+        style: edgeStyle(active, isRisk && srcIdx >= 3 ? "oklch(0.577 0.245 27)" : "oklch(0.72 0.19 195)", active ? 2.5 : 1.5),
+        markerEnd: active ? { type: MarkerType.ArrowClosed, color: "oklch(0.72 0.19 195)", width: 12, height: 12 } : undefined,
+      }
+    }))
+    setShowRiskAlert(s === 4)
   }, [setNodes, setEdges])
 
-  useEffect(() => {
-    updateGraph(currentStep)
-  }, [currentStep, updateGraph])
+  useEffect(() => { applyStep(step) }, [step, applyStep])
 
+  // ── Playback timer ──────────────────────────────────────────────────────────
   useEffect(() => {
-    if (!isPlaying) return
-    
-    const interval = setInterval(() => {
-      setCurrentStep((prev) => {
-        if (prev >= totalSteps - 1) {
-          return 0
-        }
-        return prev + 1
+    if (!playing) { if (timerRef.current) clearInterval(timerRef.current); return }
+    timerRef.current = setInterval(() => {
+      setStep(p => {
+        const next = p + 1
+        if (next >= total) { setPlaying(false); return p }
+        return next
       })
-    }, 2000)
+    }, 1800)
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+  }, [playing, total])
 
-    return () => clearInterval(interval)
-  }, [isPlaying, totalSteps])
-
-  const handleRestart = () => {
-    setCurrentStep(0)
-    setIsPlaying(true)
-  }
-
-  const handleJumpToEnd = () => {
-    setCurrentStep(totalSteps)
-    setIsPlaying(false)
-  }
-
-  // Drag and Drop handlers
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(true)
-  }
-
-  const handleDragLeave = () => {
-    setIsDragging(false)
-  }
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(false)
-    
+  // ── Drag & drop JSON ────────────────────────────────────────────────────────
+  const onDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault(); setIsDragging(false)
     const file = e.dataTransfer.files[0]
-    if (file && (file.type === "application/json" || file.name.endsWith(".json"))) {
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        try {
-          const data = JSON.parse(event.target?.result as string)
-          if (Array.isArray(data)) {
-            // Reconstruct straight chain from steps
-            const newNodes: Node[] = data.map((item, idx) => ({
-              id: String(idx + 1),
-              type: item.type || "thought",
-              position: { x: 50 + idx * 180, y: 100 + (idx % 2) * 60 },
-              data: { 
-                label: item.label || item.title || `Node ${idx + 1}`, 
-                description: item.description || item.subtext || "Custom traced event",
-                active: false,
-                completed: false
-              },
-              sourcePosition: Position.Right,
-              targetPosition: Position.Left,
-            }))
-            const newEdges: Edge[] = newNodes.slice(0, -1).map((node, idx) => ({
-              id: `e${idx+1}-${idx+2}`,
-              source: node.id,
-              target: newNodes[idx+1].id,
-              animated: false,
-              style: { stroke: "oklch(0.72 0.19 195 / 0.4)", strokeWidth: 2 }
-            }))
-            setNodes(newNodes)
-            setEdges(newEdges)
-            setCurrentStep(0)
-            setIsPlaying(true)
-          } else if (data.nodes && Array.isArray(data.nodes)) {
-            setNodes(data.nodes)
-            setEdges(data.edges || [])
-            setCurrentStep(0)
-            setIsPlaying(true)
-          }
-        } catch (err) {
-          alert("Invalid Aether Trace format or corrupt JSON!")
-        }
-      }
-      reader.readAsText(file)
+    if (!file?.name.endsWith(".json")) return
+    const reader = new FileReader()
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target?.result as string)
+        const arr = Array.isArray(data) ? data : data.nodes
+        if (!Array.isArray(arr)) return
+        const newNodes: Node[] = arr.map((item: any, idx: number) => ({
+          id: String(idx + 1), type: item.type === "output" ? "safeOutput" : (item.type || "thought"),
+          position: { x: 40 + idx * 280, y: 240 + (idx % 2 === 0 ? 0 : -100) },
+          data: { label: item.label || `Node ${idx+1}`, sub: item.description || "Custom traced event", kind: (item.type === "output" ? "safeOutput" : item.type || "thought") as NodeKind },
+          sourcePosition: Position.Right, targetPosition: Position.Left,
+        }))
+        const newEdges: Edge[] = newNodes.slice(0,-1).map((_,i) => ({
+          id:`e${i+1}-${i+2}`, source:String(i+1), target:String(i+2), type:"smoothstep",
+          style: edgeStyle(false, "oklch(0.72 0.19 195)"),
+        }))
+        setNodes(newNodes); setEdges(newEdges); setStep(0); setPlaying(true)
+      } catch { alert("Invalid Aether Trace JSON") }
     }
-  }
+    reader.readAsText(file)
+  }, [setNodes, setEdges])
 
   return (
     <section className="py-24 relative" id="replay">
-      <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <span className="inline-block px-4 py-1.5 rounded-full glass-panel text-xs font-semibold text-primary mb-4">
+      <div className="site-container">
+        {/* Section header */}
+        <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} className="text-center mb-12">
+          <span className="inline-block px-4 py-1.5 rounded-full border border-primary/30 bg-primary/8 text-xs font-bold text-primary mb-4">
             Interactive Playback Sandbox
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
             Interactive <span className="text-gradient-cyan">Cognition Replay</span>
           </h2>
-          <p className="text-muted-foreground text-base max-w-2xl mx-auto">
-            Watch AI reasoning unfold step by step. Drag & drop your local agent trace JSON file directly onto the canvas to replay your own custom runs!
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Watch AI reasoning unfold step by step. Drag & drop your local agent trace JSON file directly onto the canvas to replay your own custom runs.
           </p>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="glass-panel rounded-2xl p-6 max-w-5xl mx-auto relative overflow-hidden"
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
+        {/* Main panel */}
+        <motion.div initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:0.2 }}
+          className="glass-panel rounded-2xl overflow-hidden relative border border-border/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-card/10 backdrop-blur-md"
+          onDragOver={e => { e.preventDefault(); setIsDragging(true) }}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={onDrop}
         >
-          {/* Controls */}
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-border/50 relative z-10">
+          {/* Rectangular Alert Box: Centered, compact, above the graph */}
+          <AnimatePresence>
+            {showRiskAlert && (
+              <motion.div 
+                initial={{ opacity:0, y:-12, x:"-50%" }} 
+                animate={{ opacity:1, y:0, x:"-50%" }} 
+                exit={{ opacity:0, y:-12, x:"-50%" }}
+                className="absolute top-6 left-1/2 -translate-x-1/2 z-30 w-[300px] flex flex-col items-center justify-center p-4 gap-2.5 rounded-2xl border border-red-500/40 bg-red-500/12 backdrop-blur-md text-red-400 text-center shadow-[0_0_30px_oklch(0.577_0.245_27/_0.25)]"
+              >
+                <div className="flex items-center gap-1.5">
+                  <span className="text-base animate-bounce">⚠</span>
+                  <span className="text-[10px] font-mono tracking-widest font-black uppercase">Guardrails Intercepted</span>
+                </div>
+                <span className="text-[11px] leading-relaxed text-red-400/90 font-medium">
+                  Wildcard payload block: unauthorized deletion proposed.
+                </span>
+                <span className="text-[9px] font-mono text-red-400/50 bg-red-500/10 px-2 py-0.5 rounded">
+                  TIME DILATION 0.1× Active
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Drag overlay */}
+          <AnimatePresence>
+            {isDragging && (
+              <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
+                className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-background/90 backdrop-blur-md border-4 border-dashed border-primary/50 rounded-2xl"
+              >
+                <Upload className="w-12 h-12 text-primary animate-bounce" />
+                <div className="text-center"><p className="text-lg font-bold">Drop Aether Trace JSON</p><p className="text-sm text-muted-foreground">Reconstruct and replay instantly</p></div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Controls bar */}
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border/30">
             <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsPlaying(!isPlaying)}
-                className="border-primary/30 hover:border-primary hover:bg-primary/10"
-              >
-                {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              <Button variant="outline" size="sm" onClick={() => setPlaying(p => !p)} className="border-primary/30 hover:border-primary hover:bg-primary/10">
+                {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRestart}
-                className="border-border/50 hover:border-primary/50"
-              >
+              <Button variant="outline" size="sm" onClick={() => { setStep(0); setPlaying(true) }} className="border-border/40">
                 <RotateCcw className="w-4 h-4" />
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleJumpToEnd}
-                className="border-border/50 hover:border-primary/50"
-              >
+              <Button variant="outline" size="sm" onClick={() => { setStep(total-1); setPlaying(false) }} className="border-border/40">
                 <SkipForward className="w-4 h-4" />
               </Button>
             </div>
-
             <div className="flex items-center gap-4">
-              <span className="text-xs font-mono text-muted-foreground">
-                Node {Math.min(currentStep + 1, totalSteps)} / {totalSteps}
-              </span>
-              <div className="w-48">
-                <Slider
-                  value={[currentStep]}
-                  max={totalSteps - 1}
-                  step={1}
-                  onValueChange={([value]) => {
-                    setCurrentStep(value)
-                    setIsPlaying(false)
-                  }}
-                  className="cursor-pointer"
-                />
+              <span className="text-xs font-mono text-muted-foreground">Node {Math.min(step+1,total)} / {total}</span>
+              <div className="w-52">
+                <Slider value={[step]} max={total-1} step={1} onValueChange={([v]) => { setStep(v); setPlaying(false) }} className="cursor-pointer" />
               </div>
             </div>
           </div>
 
-          {/* Graph Canvas */}
-          <div className="h-[400px] rounded-xl overflow-hidden bg-background/30 relative">
-            
-            {/* Drag and Drop Hover Overlay */}
-            <AnimatePresence>
-              {isDragging && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="absolute inset-0 bg-background/90 backdrop-blur-md border-4 border-dashed border-primary/50 rounded-xl z-50 flex flex-col items-center justify-center gap-4 text-center pointer-events-none"
-                >
-                  <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center text-primary animate-bounce">
-                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="text-lg font-bold text-foreground">Drop Aether Trace JSON</h4>
-                    <p className="text-xs text-muted-foreground mt-1">Reconstruct and replay your agent cognition instantly</p>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+          {/* Two-panel layout: graph + telemetry */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px]">
+            {/* Expanded Canvas Container Height: 620px */}
+            <div className="h-[620px] relative" style={{ background:"rgba(5,5,12,0.6)" }}>
+              <style>{`
+                @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+                .react-flow__attribution { display:none; }
+              `}</style>
+              <ReactFlow
+                nodes={nodes} edges={edges}
+                onNodesChange={onNodesChange} onEdgesChange={onEdgesChange}
+                nodeTypes={nodeTypes}
+                fitView fitViewOptions={{ padding:0.08, minZoom:0.6, maxZoom:1.1 }}
+                proOptions={{ hideAttribution:true }}
+                panOnDrag zoomOnScroll zoomOnPinch
+                nodesDraggable={false} nodesConnectable={false} elementsSelectable={false}
+                minZoom={0.15} maxZoom={2}
+              >
+                <Background color="oklch(0.72 0.19 195 / 0.06)" gap={28} size={1} />
+                <Controls className="!bg-card/80 !border-border/40 !rounded-xl" showInteractive={false} />
+                <MiniMap nodeColor={(n) => {
+                  const k = (n.data as any).kind as NodeKind
+                  return { thought:"#00c8ff", tool:"#a855f7", hallucination:"#ef4444", safeOutput:"#22c55e" }[k] ?? "#888"
+                }} className="!bg-card/80 !border-border/40 !rounded-xl" maskColor="rgba(5,5,12,0.7)" />
+              </ReactFlow>
+            </div>
 
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              nodeTypes={nodeTypes}
-              fitView
-              fitViewOptions={{ padding: 0.2 }}
-              proOptions={{ hideAttribution: true }}
-              nodesDraggable={false}
-              nodesConnectable={false}
-              elementsSelectable={false}
-              panOnDrag={false}
-              zoomOnScroll={false}
-              zoomOnPinch={false}
-              zoomOnDoubleClick={false}
-            >
-              <Background color="oklch(0.72 0.19 195 / 0.08)" gap={25} size={1} />
-            </ReactFlow>
+            {/* Telemetry side panel */}
+            <div className="border-l border-border/30 flex flex-col">
+              <div className="px-4 py-3 border-b border-border/20 flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground text-left">Cognition Timeline</span>
+              </div>
+              <div className="flex-1 overflow-y-auto p-3 space-y-2">
+                {TELEMETRY.map((t, i) => {
+                  const isActive = i === step
+                  const isDone = i < step
+                  return (
+                    <motion.div key={i}
+                      animate={{ opacity: isActive ? 1 : isDone ? 0.6 : 0.2, x: isActive ? 2 : 0 }}
+                      transition={{ duration: 0.3 }}
+                      className={`p-2.5 rounded-xl border text-xs transition-all text-left ${isActive || isDone ? TEL_COLOR[t.type] : "border-border/10 text-muted-foreground/20"}`}
+                    >
+                      <div className="flex justify-between mb-1">
+                        <span className="font-bold truncate">{t.label}</span>
+                        <span className="font-mono opacity-50 shrink-0 ml-2 text-[9px]">{t.t}</span>
+                      </div>
+                      <div className="opacity-70 leading-snug font-mono text-[10px]">{t.event}</div>
+                    </motion.div>
+                  )
+                })}
+              </div>
+            </div>
           </div>
 
-          {/* Premiere Pro style AI Cognition Timeline Control Grid */}
-          <div className="mt-8 pt-6 border-t border-border/30 relative z-10">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-muted-foreground">Cognition Timeline Tracks</span>
-              <span className="text-[10px] font-mono text-primary/80">Premiere Replay Mode</span>
+          {/* Timeline track */}
+          <div className="px-6 py-4 border-t border-border/20">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-muted-foreground">Replay Trace Progress</span>
+              <span className="text-[10px] font-mono text-primary/70">Premiere Replay Mode</span>
             </div>
-            
-            <div className="relative flex items-center justify-between gap-3 overflow-x-auto pb-4 pt-2 px-1 scrollbar-none">
-              {/* Dynamic horizontal connector line */}
-              <div className="absolute top-[21px] left-8 right-8 h-[2px] bg-border/40 z-0 pointer-events-none" />
-              
-              {nodes.map((node, index) => {
-                const isActive = index === currentStep
-                const isCompleted = index < currentStep
-                const type = (node.type as string) || "thought"
-                
-                // Color codes
-                let colorClass = "bg-primary"
-                let ringClass = "border-primary/20"
-                if (type === "tool") {
-                  colorClass = "bg-accent"
-                  ringClass = "border-accent/20"
-                } else if (type === "hallucination") {
-                  colorClass = "bg-destructive animate-pulse"
-                  ringClass = "border-destructive/30"
-                } else if (type === "output") {
-                  colorClass = "bg-emerald-400"
-                  ringClass = "border-emerald-500/20"
-                }
-
+            <div className="flex items-center gap-2 overflow-x-auto pb-2">
+              {BASE_NODES.map((n, i) => {
+                const cfg = NODE_CFG[(n.data as any).kind as NodeKind]
+                const isActive = i === step
+                const isDone = i < step
                 return (
-                  <div key={node.id} className="flex-1 min-w-[120px] relative z-10 group flex flex-col items-center">
-                    <button
-                      onClick={() => {
-                        setCurrentStep(index)
-                        setIsPlaying(false)
-                      }}
-                      className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all duration-300 ${
-                        isActive
-                          ? "bg-background border-primary glow-cyan scale-110"
-                          : isCompleted
-                          ? "bg-background border-primary/50 text-primary/70"
-                          : "bg-[#0b0b12] border-border/40 text-muted-foreground/40 hover:border-border/80"
-                      }`}
+                  <button key={n.id} onClick={() => { setStep(i); setPlaying(false) }}
+                    className="flex flex-col items-center gap-1.5 min-w-[72px] group"
+                  >
+                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-[10px] transition-all duration-300
+                      ${isActive ? "scale-125" : "scale-100 opacity-50 group-hover:opacity-80"}`}
+                      style={{ borderColor: isActive || isDone ? cfg.accent : "#ffffff15", background: isActive ? cfg.bg : "transparent", boxShadow: isActive ? cfg.glow : "none" }}
                     >
-                      {type === "thought" && (
-                        <span className={`text-[10px] font-mono font-bold ${isActive ? "text-primary" : "text-muted-foreground"}`}>COG</span>
-                      )}
-                      {type === "tool" && (
-                        <svg className={`w-3.5 h-3.5 ${isActive ? "text-accent" : "text-muted-foreground"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        </svg>
-                      )}
-                      {type === "hallucination" && (
-                        <svg className={`w-3.5 h-3.5 text-destructive ${isActive ? "animate-pulse" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                      )}
-                      {type === "output" && (
-                        <svg className={`w-3.5 h-3.5 text-emerald-400`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                    </button>
-
-                    {/* Small Connector Node indicator dot */}
-                    <div className={`w-2 h-2 rounded-full mt-2 transition-all duration-300 ${
-                      isActive ? `${colorClass} scale-125 ring-4 ${ringClass}` : isCompleted ? "bg-primary/60" : "bg-muted-foreground/30"
-                    }`} />
-
-                    {/* Node Metadata label & Hover descriptions popup */}
-                    <div className="mt-2 text-center w-full">
-                      <div className={`text-[10px] font-mono font-bold truncate max-w-[110px] ${isActive ? "text-primary" : "text-muted-foreground/80"}`}>
-                        {String((node.data as any)?.label || "")}
-                      </div>
+                      {isDone && !isActive ? "✓" : i+1}
                     </div>
-
-                    {/* Hover Preview Panel card */}
-                    <div className="absolute bottom-14 hidden group-hover:flex flex-col bg-[#08080f] border border-border/80 rounded-xl p-3 text-[10px] font-mono text-muted-foreground w-48 shadow-2xl z-50 pointer-events-none transition-all duration-300">
-                      <span className={`text-[8px] font-bold uppercase tracking-wider mb-1 ${
-                        type === "thought" ? "text-primary" : type === "tool" ? "text-accent" : type === "hallucination" ? "text-destructive" : "text-emerald-400"
-                      }`}>{type}</span>
-                      <p className="text-white font-bold text-[10px] mb-1">{String((node.data as any)?.label || "")}</p>
-                      <p className="text-muted-foreground leading-relaxed">{(node.data as any)?.description || ""}</p>
-                    </div>
-                  </div>
+                    <span className={`text-[9px] text-center leading-tight transition-colors ${isActive ? "text-foreground font-bold" : "text-muted-foreground/40"}`}>
+                      {String(n.data.label ?? "").split(" ").slice(1).join(" ") || String(n.data.label ?? "")}
+                    </span>
+                  </button>
                 )
               })}
             </div>

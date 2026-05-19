@@ -51,7 +51,7 @@ const localFeatures = [
 
 export function LocalFirstShowcase() {
   return (
-    <section className="py-28 relative overflow-hidden bg-background" id="local-first">
+    <section className="py-space-120 relative overflow-hidden bg-background" id="local-first">
       {/* Visual background details */}
       <div 
         className="absolute inset-0 opacity-[0.015] pointer-events-none z-0"
@@ -63,15 +63,15 @@ export function LocalFirstShowcase() {
       />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[300px] bg-gradient-radial-cyan opacity-[0.04] blur-3xl pointer-events-none" />
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="site-container relative z-10">
         
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-20">
+        <div className="max-w-3xl mx-auto text-center mb-space-80">
           <motion.span 
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-xs font-semibold text-primary uppercase tracking-wider mb-4"
+            className="inline-block px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-label font-semibold text-primary mb-4"
           >
             Zero-Infra Philosophy
           </motion.span>
@@ -80,7 +80,7 @@ export function LocalFirstShowcase() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6"
+            className="text-display-md font-semibold tracking-tight mb-6"
           >
             Observability <span className="text-gradient-cyan">Fully Local-First</span>
           </motion.h2>
@@ -89,14 +89,14 @@ export function LocalFirstShowcase() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto"
+            className="text-body-lg text-muted-foreground max-w-2xl mx-auto"
           >
             Aether runs entirely inside your development space. No databases to host, no cloud credentials to configure, and absolutely no external telemetry.
           </motion.p>
         </div>
 
         {/* Feature Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {localFeatures.map((feat, idx) => {
             const Icon = feat.icon
             return (
@@ -107,7 +107,7 @@ export function LocalFirstShowcase() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.08 }}
                 whileHover={{ y: -4 }}
-                className="glass-panel rounded-2xl p-6 border border-border/30 hover:border-primary/30 bg-card/40 flex flex-col justify-between transition-all duration-300"
+                className="glass-panel rounded-2xl p-8 border border-border/30 hover:border-primary/30 bg-card/40 flex h-full flex-col justify-between transition-all duration-300"
               >
                 <div className="space-y-4">
                   {/* Icon and Badge */}
@@ -115,15 +115,15 @@ export function LocalFirstShowcase() {
                     <div className="p-3 rounded-xl bg-primary/10 text-primary border border-primary/20">
                       <Icon className="w-5 h-5" />
                     </div>
-                    <span className="text-[10px] font-mono font-bold tracking-wider text-muted-foreground uppercase bg-muted/40 px-2.5 py-0.5 rounded">
+                    <span className="text-label font-mono font-bold text-muted-foreground bg-muted/40 px-2.5 py-0.5 rounded">
                       {feat.badge}
                     </span>
                   </div>
 
                   {/* Title & Description */}
                   <div className="space-y-2">
-                    <h3 className="text-lg font-bold text-foreground">{feat.title}</h3>
-                    <p className="text-xs leading-relaxed text-muted-foreground">
+                    <h3 className="text-feature font-semibold text-foreground">{feat.title}</h3>
+                    <p className="text-body-sm text-muted-foreground">
                       {feat.description}
                     </p>
                   </div>
@@ -142,14 +142,14 @@ export function LocalFirstShowcase() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="mt-16 max-w-4xl mx-auto glass-panel rounded-2xl p-6 border border-border/40 bg-card/30 flex flex-col md:flex-row gap-6 items-center justify-between"
+          className="mt-space-48 glass-panel rounded-2xl p-8 border border-border/40 bg-card/30 flex flex-col md:flex-row gap-6 items-center justify-between"
         >
           <div className="space-y-2 flex-1">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <h4 className="font-bold text-foreground text-sm">Git-Friendly & Zero Overhead</h4>
+              <h4 className="font-semibold text-foreground text-feature">Git-Friendly & Zero Overhead</h4>
             </div>
-            <p className="text-xs text-muted-foreground leading-relaxed max-w-xl">
+            <p className="text-body-sm text-muted-foreground max-w-xl">
               Because Aether saves raw event dumps inside standard JSON files, you can commit trace streams directly to Git to trace reasoning regressions alongside source code diffs.
             </p>
           </div>

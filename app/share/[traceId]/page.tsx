@@ -62,7 +62,7 @@ export default function ShareTracePage() {
                 Return Home
               </Button>
             </Link>
-            <Link href="/auth">
+            <Link href="/login">
               <Button size="sm" className="glow-cyan-subtle text-xs font-mono">
                 Join Beta Access
                 <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
@@ -81,7 +81,7 @@ export default function ShareTracePage() {
       
       {/* Top Banner Navigation Header */}
       <nav className="border-b border-border/20 bg-background/50 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="site-container h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
@@ -98,7 +98,7 @@ export default function ShareTracePage() {
           </div>
 
           <div>
-            <Link href="/auth">
+            <Link href="/login">
               <Button size="sm" className="glow-cyan-subtle text-xs font-mono h-8">
                 Observe Your Agents
                 <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
@@ -109,7 +109,7 @@ export default function ShareTracePage() {
       </nav>
 
       {/* Replayer Viewport */}
-      <div className="max-w-5xl mx-auto px-6 mt-8 space-y-6">
+      <div className="site-container mt-8 space-y-6">
         
         {/* Info Banner */}
         <div className="bg-card/20 border border-border/30 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -164,7 +164,7 @@ export default function ShareTracePage() {
                 Explore Features
               </Button>
             </Link>
-            <Link href="/auth">
+            <Link href="/login">
               <Button size="sm" className="glow-cyan text-xs font-mono h-9">
                 Request Early Access
                 <ArrowRight className="w-3.5 h-3.5 ml-1.5" />

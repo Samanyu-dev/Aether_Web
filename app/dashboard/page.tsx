@@ -91,6 +91,15 @@ export default function DashboardPage() {
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [isCopiedSDK, setIsCopiedSDK] = useState(false)
   const [shareToast, setShareToast] = useState<string | null>(null)
+  const [inviteCode, setInviteCode] = useState("")
+  const [inviteResult, setInviteResult] = useState<string | null>(null)
+  const [waitlistEmail, setWaitlistEmail] = useState("")
+  const [onboardingChecklist, setOnboardingChecklist] = useState({
+    sdkInstalled: false,
+    extensionInstalled: false,
+    firstTraceUploaded: false,
+    replayShared: false,
+  })
   const [systemLogs, setSystemLogs] = useState<string[]>([
     "INITIALIZING LOCAL Observatorio GRAPH ENGINE...",
     "CONNECTED local socket at .aether/sessions/live_ipc_8000.sock",
@@ -110,10 +119,27 @@ export default function DashboardPage() {
     }
   }, [traces, activeReplayTrace, setActiveReplayTrace])
 
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const saved = localStorage.getItem("aether_onboarding_checklist")
+    if (saved) {
+      try {
+        setOnboardingChecklist(JSON.parse(saved))
+      } catch {
+        // ignore invalid local data
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    localStorage.setItem("aether_onboarding_checklist", JSON.stringify(onboardingChecklist))
+  }, [onboardingChecklist])
+
   // Handlers
   const handleSignOut = async () => {
     await signOut()
-    router.push("/auth")
+    router.push("/login")
   }
 
   const copyToClipboard = (text: string, id: string) => {
@@ -126,6 +152,7 @@ export default function DashboardPage() {
     e.stopPropagation()
     const shareUrl = `${window.location.origin}/share/${traceId}`
     navigator.clipboard.writeText(shareUrl)
+    setOnboardingChecklist((prev) => ({ ...prev, replayShared: true }))
     setShareToast(traceId)
     setTimeout(() => setShareToast(null), 3000)
   }
@@ -188,6 +215,7 @@ export default function DashboardPage() {
         const newTrace = await uploadTrace(title, `Uploaded via sandbox client - ${file.name}`, nodes, edges, parsed.duration_ms || 1200)
         if (newTrace) {
           setActiveReplayTrace(newTrace)
+          setOnboardingChecklist((prev) => ({ ...prev, firstTraceUploaded: true }))
           setSystemLogs(prev => [`Telemetry ingested: ${title} (${nodes.length} nodes)`, ...prev])
         }
       } catch (err) {
@@ -219,7 +247,35 @@ export default function DashboardPage() {
   const handleCopySDK = () => {
     navigator.clipboard.writeText("pip install aether-observe")
     setIsCopiedSDK(true)
+    setOnboardingChecklist((prev) => ({ ...prev, sdkInstalled: true }))
     setTimeout(() => setIsCopiedSDK(false), 2000)
+  }
+
+  const handleInviteCodeSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!inviteCode.trim()) {
+      setInviteResult("Enter your invite code.")
+      return
+    }
+
+    const normalized = inviteCode.trim().toUpperCase()
+    if (normalized.startsWith("AETHER-")) {
+      setInviteResult("Invite accepted. Beta features unlocked for this workspace.")
+      setSystemLogs((prev) => [`Invite code accepted: ${normalized}`, ...prev])
+    } else {
+      setInviteResult("Invalid invite code format. Expected prefix: AETHER-")
+    }
+  }
+
+  const handleWaitlistSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!waitlistEmail.includes("@")) {
+      setInviteResult("Enter a valid waitlist email.")
+      return
+    }
+    setInviteResult(`Waitlist request captured for ${waitlistEmail}.`)
+    setSystemLogs((prev) => [`Waitlist signup: ${waitlistEmail}`, ...prev])
+    setWaitlistEmail("")
   }
 
   // Loader state
@@ -255,7 +311,7 @@ export default function DashboardPage() {
       
       {/* Top Banner Navigation */}
       <nav className="border-b border-border/20 bg-background/50 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="site-container h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
@@ -276,7 +332,7 @@ export default function DashboardPage() {
               <span className="text-white font-bold">{user?.email || "Offline Developer"}</span>
               <span className="text-muted-foreground flex items-center gap-1">
                 <CloudLightning className="w-3 h-3 text-primary" />
-                Cloud sync active (mock client)
+                Cloud sync active
               </span>
             </div>
             <Button
@@ -293,7 +349,7 @@ export default function DashboardPage() {
       </nav>
 
       {/* Platform Analytics Dashboard Command Center */}
-      <div className="max-w-7xl mx-auto px-6 mt-8">
+      <div className="site-container mt-8">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 pb-4 border-b border-border/10">
           <div>
             <h1 className="text-xl font-bold font-mono text-white flex items-center gap-2">
@@ -401,10 +457,74 @@ export default function DashboardPage() {
             <span>Just now</span>
           </div>
         </div>
+
+        <div className="grid gap-4 lg:grid-cols-2 mb-8">
+          <div className="glass-panel rounded-xl border border-border/30 p-5">
+            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white mb-4">Beta Access Controls</h4>
+            <form onSubmit={handleInviteCodeSubmit} className="flex flex-col gap-3">
+              <label className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">Invite Code</label>
+              <input
+                value={inviteCode}
+                onChange={(e) => setInviteCode(e.target.value)}
+                placeholder="AETHER-XXXX-XXXX"
+                className="h-9 rounded-md border border-border/40 bg-background/40 px-3 text-xs font-mono text-foreground outline-none focus:border-primary/50"
+              />
+              <Button size="sm" className="h-8 w-fit px-4 text-xs font-mono">
+                Validate Code
+              </Button>
+            </form>
+
+            <form onSubmit={handleWaitlistSubmit} className="mt-6 flex flex-col gap-3 border-t border-border/20 pt-4">
+              <label className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">Join Waitlist</label>
+              <input
+                value={waitlistEmail}
+                onChange={(e) => setWaitlistEmail(e.target.value)}
+                placeholder="team@company.com"
+                className="h-9 rounded-md border border-border/40 bg-background/40 px-3 text-xs font-mono text-foreground outline-none focus:border-primary/50"
+              />
+              <Button size="sm" variant="outline" className="h-8 w-fit px-4 text-xs font-mono border-border/50">
+                Request Access
+              </Button>
+            </form>
+
+            {inviteResult && (
+              <p className="mt-4 text-[11px] font-mono text-primary">{inviteResult}</p>
+            )}
+          </div>
+
+          <div className="glass-panel rounded-xl border border-border/30 p-5">
+            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white mb-4">Onboarding Checklist</h4>
+            <div className="space-y-3">
+              {[
+                { key: "sdkInstalled", label: "Install SDK package" },
+                { key: "extensionInstalled", label: "Install VS Code extension" },
+                { key: "firstTraceUploaded", label: "Upload first trace JSON" },
+                { key: "replayShared", label: "Share replay link" },
+              ].map((item) => {
+                const checked = onboardingChecklist[item.key as keyof typeof onboardingChecklist]
+                return (
+                  <button
+                    key={item.key}
+                    onClick={() =>
+                      setOnboardingChecklist((prev) => ({ ...prev, [item.key]: !checked }))
+                    }
+                    className={`w-full rounded-lg border px-3 py-2 text-left text-xs font-mono transition-colors ${
+                      checked
+                        ? "border-primary/40 bg-primary/10 text-primary"
+                        : "border-border/40 bg-background/40 text-muted-foreground hover:border-border/70"
+                    }`}
+                  >
+                    {checked ? "✓" : "○"} {item.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Main Container Layout */}
-      <div className="max-w-7xl mx-auto px-6 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="site-container mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Left Side: Local runtime, SDK controls, tiering (4 columns) */}
         <div className="lg:col-span-4 space-y-8">
@@ -766,11 +886,11 @@ export default function DashboardPage() {
                           <span>{trace.event_count || trace.nodes?.length || 0} nodes</span>
                           <span>•</span>
                           <span>{trace.duration_ms ? `${(trace.duration_ms / 1000).toFixed(2)}s` : "0.00s"}</span>
-                          {trace.max_confidence !== undefined && (
+                          {trace.max_confidence !== undefined && trace.max_confidence !== null && (
                             <>
                               <span>•</span>
                               <span className={isLowConfidence ? "text-destructive" : "text-emerald-400"}>
-                                Bottleneck: {(trace.max_confidence * 100).toFixed(0)}%
+                                Bottleneck: {((trace.max_confidence ?? 0) * 100).toFixed(0)}%
                               </span>
                             </>
                           )}

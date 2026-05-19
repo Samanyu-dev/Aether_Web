@@ -2,10 +2,23 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Play, Copy, Check, Terminal, ExternalLink } from "lucide-react"
+import { Play, Copy, Check, Terminal, Zap, GitBranch, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CognitionDAG } from "./cognition-dag"
-import { CognitionStream } from "./cognition-stream"
+import Link from "next/link"
+
+const ECOSYSTEM_BADGES = [
+  { label: "LangChain", color: "text-emerald-400 border-emerald-500/30 bg-emerald-500/8" },
+  { label: "CrewAI",    color: "text-blue-400 border-blue-500/30 bg-blue-500/8" },
+  { label: "OpenAI SDK",color: "text-primary border-primary/30 bg-primary/8" },
+  { label: "AutoGen",   color: "text-accent border-accent/30 bg-accent/8" },
+]
+
+const FEATURE_PILLS = [
+  { icon: Zap,       label: "Real-time telemetry" },
+  { icon: GitBranch, label: "Branch replay" },
+  { icon: Shield,    label: "Guardrail events" },
+]
 
 export function HeroSection() {
   const [copied, setCopied] = useState(false)
@@ -13,192 +26,142 @@ export function HeroSection() {
   const handleCopyInstall = async () => {
     await navigator.clipboard.writeText("pip install aether-observe")
     setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    setTimeout(() => setCopied(false), 1500)
   }
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-      {/* Premium dark-mode radial gradients */}
-      <div className="absolute inset-0 bg-gradient-radial-cyan opacity-[0.15] z-0 pointer-events-none" />
-      <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] bg-gradient-radial-purple opacity-[0.08] z-0 pointer-events-none" />
+    <section className="relative overflow-hidden pt-24 pb-16 min-h-screen flex items-center">
+      {/* Ambient background */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_60%_20%,oklch(0.72_0.19_195_/_0.12),transparent_70%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(0.72_0.19_195_/_0.04)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.72_0.19_195_/_0.04)_1px,transparent_1px)] bg-[size:56px_56px] pointer-events-none" />
 
-      {/* Apple-style background grid pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.02] z-0 pointer-events-none"
-        style={{
-          backgroundImage: `linear-gradient(oklch(0.72 0.19 195 / 0.5) 1px, transparent 1px),
-                           linear-gradient(90deg, oklch(0.72 0.19 195 / 0.5) 1px, transparent 1px)`,
-          backgroundSize: '50px 50px'
-        }}
-      />
+      <div className="site-container relative z-10 w-full">
+        {/* Two-column layout: 5-col text | 7-col graph */}
+        <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
 
-      <div className="container mx-auto px-6 py-16 relative z-10">
-        <div className="grid lg:grid-cols-12 gap-12 items-center">
-
-          {/* LEFT: Headline, subheadline, copyable pip command, CTAs (7 cols on large screens for ample text breathing room) */}
+          {/* LEFT — Content column */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="lg:col-span-7 space-y-8"
+            transition={{ duration: 0.6 }}
+            className="space-y-7 lg:col-span-5"
           >
-            {/* Open Source announcement badge */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-xs font-semibold text-primary uppercase tracking-wider select-none"
-            >
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              100% Local-First AI Observability
-            </motion.div>
+            {/* Status badge */}
+            <p className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/8 px-3 py-1 text-xs font-semibold text-primary">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
+              Local-First AI Observability
+            </p>
 
-            {/* Main Hero Headline - See AI reasoning unfold visually */}
-            <motion.h1
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-              className="text-5xl md:text-6.5xl lg:text-7.5xl font-bold tracking-tight text-foreground leading-[1.02] text-balance"
-            >
-              See AI reasoning <br />
-              <span className="text-gradient-cyan">unfold visually</span>.
-            </motion.h1>
-
-            {/* Subheadline - Replay thoughts, tool calls, hallucinations like source code */}
-            <motion.p
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed text-balance"
-            >
-              Replay thoughts, tool calls, hallucinations, and self correction like source code execution. Aether is a lightweight, zero dependency, local-first cognition replay engine.
-            </motion.p>
-
-            {/* Inline Copyable CLI Terminal Command - pip install aether-observe */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="flex items-center max-w-md bg-card/60 backdrop-blur-md border border-border/40 rounded-xl p-3 justify-between font-mono text-xs text-muted-foreground select-none"
-            >
-              <span className="flex items-center gap-2 text-foreground/90 pl-1">
-                <Terminal className="w-4 h-4 text-primary" />
-                pip install aether-observe
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleCopyInstall}
-                className="h-8 text-[11px] hover:bg-muted/40 font-semibold flex items-center gap-1.5"
-              >
-                {copied ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    Copied
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    Copy
-                  </>
-                )}
-              </Button>
-            </motion.div>
-
-            {/* Dominant Hero CTA & Secondary CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-              className="flex flex-wrap items-center gap-4"
-            >
-              <a href="#hallucination-showcase">
-                <Button size="lg" className="glow-cyan text-sm px-8 py-6 group font-semibold uppercase tracking-wider">
-                  <Play className="w-4 h-4 mr-2.5 group-hover:scale-110 transition-transform" />
-                  Launch Hallucination Replay
-                </Button>
-              </a>
-
-              <a href="#sdk">
-                <Button size="lg" variant="outline" className="border-border/60 hover:border-primary/40 hover:bg-primary/5 text-sm px-6 py-6 font-semibold uppercase tracking-wider">
-                  Install SDK
-                </Button>
-              </a>
-            </motion.div>
-
-            {/* Social Proof Area */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 1 }}
-              className="pt-6 border-t border-border/20 max-w-xl"
-            >
-              <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-3">
-                Native Agent Orchestrations
-              </div>
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-xs font-mono text-muted-foreground/80">
-                <span className="flex items-center gap-1.5 hover:text-primary transition-colors cursor-default">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/60" /> LangChain
-                </span>
-                <span className="flex items-center gap-1.5 hover:text-accent transition-colors cursor-default">
-                  <span className="w-1.5 h-1.5 rounded-full bg-accent/60" /> CrewAI
-                </span>
-                <span className="flex items-center gap-1.5 hover:text-chart-3 transition-colors cursor-default">
-                  <span className="w-1.5 h-1.5 rounded-full bg-chart-3/60" /> OpenAI SDK
-                </span>
-                <span className="flex items-center gap-1.5 hover:text-primary transition-colors cursor-default">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/60" /> LangGraph
-                </span>
-                <span className="flex items-center gap-1.5 hover:text-foreground transition-colors cursor-default">
-                  <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/60" /> Python Agents
-                </span>
-              </div>
-            </motion.div>
-          </motion.div>
-
-          {/* RIGHT: Live replay preview containing traversing DAG and token streams (5 cols) */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4, duration: 1, ease: "easeOut" }}
-            className="lg:col-span-5 relative"
-          >
-            {/* The Live Reconstructed Visualizer Mock */}
-            <div className="relative rounded-3xl overflow-hidden glass-panel p-2 bg-card/40 border border-border/50">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 rounded-3xl" />
-
-              {/* Header inside mockup */}
-              <div className="flex items-center justify-between px-4 py-2 border-b border-border/30 mb-2">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />
-                  <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
-                    Live Session Replay
-                  </span>
-                </div>
-                <span className="text-[9px] font-mono text-primary font-bold">
-                  traversal_rate: 1.5s
-                </span>
-              </div>
-
-              {/* DAG Canvas */}
-              <CognitionDAG />
+            {/* Headline */}
+            <div className="space-y-4">
+              <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-foreground leading-[1.08]">
+                AI reasoning,{" "}
+                <span className="text-gradient-cyan">replayed</span>{" "}
+                like a debugger.
+              </h1>
+              <p className="max-w-lg text-lg text-muted-foreground leading-relaxed">
+                Step through thoughts, tool calls, memory retrieval, and self-correction in a timeline your engineering team can actually trust.
+              </p>
             </div>
 
-            {/* Floating Live Event Stream Sidebar Overlay */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.9, duration: 0.8 }}
-              className="absolute -right-6 top-1/3 w-64 hidden xl:block z-20"
-            >
-              <CognitionStream />
-            </motion.div>
+            {/* Feature pills */}
+            <div className="flex flex-wrap gap-2">
+              {FEATURE_PILLS.map(({ icon: Icon, label }) => (
+                <span key={label} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border/40 bg-card/40 text-xs text-muted-foreground">
+                  <Icon className="h-3 w-3 text-primary" />
+                  {label}
+                </span>
+              ))}
+            </div>
+
+            {/* Install command */}
+            <div className="max-w-sm rounded-xl border border-border/50 bg-card/50 p-3">
+              <div className="flex items-center justify-between gap-3 font-mono text-sm">
+                <span className="flex items-center gap-2 text-foreground">
+                  <Terminal className="h-4 w-4 text-primary shrink-0" />
+                  pip install aether-observe
+                </span>
+                <Button variant="ghost" size="sm" className="h-8 px-2 shrink-0" onClick={handleCopyInstall}>
+                  {copied ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
+                </Button>
+              </div>
+            </div>
+
+            {/* CTAs */}
+            <div className="flex flex-wrap gap-3">
+              <a href="#replay">
+                <Button size="lg" className="h-11 px-7 font-semibold">
+                  <Play className="mr-2 h-4 w-4" />
+                  Open Replay
+                </Button>
+              </a>
+              <Link href="/signup">
+                <Button size="lg" variant="outline" className="h-11 px-7 border-border/60 hover:border-primary/50 font-semibold">
+                  Start Beta
+                </Button>
+              </Link>
+            </div>
+
+            {/* Ecosystem badges */}
+            <div>
+              <p className="text-xs text-muted-foreground/60 mb-2 font-mono uppercase tracking-wider">Works with</p>
+              <div className="flex flex-wrap gap-2">
+                {ECOSYSTEM_BADGES.map(b => (
+                  <span key={b.label} className={`px-2.5 py-1 rounded-lg border text-[11px] font-semibold ${b.color}`}>
+                    {b.label}
+                  </span>
+                ))}
+              </div>
+            </div>
           </motion.div>
+
+          {/* RIGHT — Cinematic graph engine */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.15 }}
+            className="lg:col-span-7"
+          >
+            <div className="rounded-2xl border border-border/40 bg-card/30 backdrop-blur-sm overflow-hidden">
+              {/* Header bar */}
+              <div className="flex items-center justify-between border-b border-border/30 px-5 py-3.5">
+                <div className="flex items-center gap-3">
+                  <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-primary" />
+                  <span className="text-xs font-mono font-semibold text-muted-foreground uppercase tracking-wider">Live Session Replay</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-xs font-mono text-primary">Traversal 1.5s</span>
+                  <div className="flex gap-1">
+                    {["bg-red-500/60", "bg-yellow-500/60", "bg-emerald-500/60"].map((c, i) => (
+                      <span key={i} className={`w-2.5 h-2.5 rounded-full ${c}`} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Graph canvas — tall enough to show graph + stream row below */}
+              <div className="h-[560px] relative bg-background/20">
+                <CognitionDAG />
+              </div>
+
+              {/* Footer metrics */}
+              <div className="grid grid-cols-3 gap-0 border-t border-border/30">
+                {[
+                  { label: "NODES", value: "7 active",       color: "text-primary" },
+                  { label: "EDGE FLOW", value: "Animated",   color: "text-accent" },
+                  { label: "STATUS", value: "Telemetry safe", color: "text-emerald-400" },
+                ].map(({ label, value, color }, i) => (
+                  <div key={label} className={`px-5 py-3.5 ${i < 2 ? "border-r border-border/30" : ""}`}>
+                    <p className={`text-[10px] font-bold uppercase tracking-wider ${color}`}>{label}</p>
+                    <p className="mt-1 text-sm font-semibold text-foreground">{value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
         </div>
       </div>
-
-      {/* Elegant bottom gradient fade to main body */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none" />
     </section>
   )
 }

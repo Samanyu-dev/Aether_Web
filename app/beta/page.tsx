@@ -48,7 +48,7 @@ export default function BetaPage() {
         <div className="absolute bottom-[20%] left-[15%] w-[500px] h-[500px] bg-gradient-radial-purple opacity-[0.05]" />
       </div>
 
-      <div className="container mx-auto px-6 pt-36 pb-20 relative z-10 flex-grow max-w-xl">
+      <div className="site-container pt-36 pb-20 relative z-10 flex-grow max-w-xl">
         <AnimatePresence mode="wait">
           {!isApproved ? (
             <motion.div
@@ -150,7 +150,7 @@ export default function BetaPage() {
               </p>
 
               <div className="space-y-3">
-                <Link href="/auth">
+                <Link href="/login">
                   <Button className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold py-5 rounded-xl border border-primary/20 glow-cyan-subtle font-mono text-xs">
                     Sign In to Profile
                   </Button>

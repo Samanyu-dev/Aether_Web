@@ -170,7 +170,7 @@ export function SDKShowcase() {
         <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-radial-cyan opacity-[0.04]" />
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="site-container relative z-10">
         
         {/* Header */}
         <div className="max-w-3xl mx-auto text-center mb-16">

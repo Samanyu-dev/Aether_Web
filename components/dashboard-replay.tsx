@@ -6,6 +6,7 @@ import {
   useNodesState,
   useEdgesState,
   Background,
+  Handle,
   type Node,
   type Edge,
   Position,
@@ -20,93 +21,109 @@ import { type Trace } from "@/lib/supabase"
 // Custom Node Components
 function ThoughtNode({ data }: any) {
   return (
-    <motion.div
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className={`px-4 py-3 rounded-lg border text-left transition-all duration-300 min-w-[170px] ${
-        data.active 
-          ? "bg-primary/20 border-primary glow-cyan scale-105" 
-          : data.completed
-          ? "bg-primary/5 border-primary/40 opacity-80"
-          : "bg-card/40 border-border/20 opacity-50"
-      }`}
-    >
-      <div className="flex items-center gap-2">
-        <div className={`w-2.5 h-2.5 rounded-full ${data.active ? "bg-primary animate-pulse" : data.completed ? "bg-primary/75" : "bg-muted-foreground/30"}`} />
-        <span className="text-xs font-semibold text-foreground font-mono truncate max-w-[130px]">{data.label}</span>
-      </div>
-      <p className="text-[10px] text-muted-foreground mt-1.5 pl-4 line-clamp-2">{data.description}</p>
-    </motion.div>
+    <div className="relative">
+      <Handle type="target" position={Position.Left} isConnectable={false} className="!opacity-0 !pointer-events-none" />
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className={`px-4 py-3 rounded-lg border text-left transition-all duration-300 min-w-[170px] ${
+          data.active 
+            ? "bg-primary/20 border-primary glow-cyan scale-105" 
+            : data.completed
+            ? "bg-primary/5 border-primary/40 opacity-80"
+            : "bg-card/40 border-border/20 opacity-50"
+        }`}
+      >
+        <div className="flex items-center gap-2">
+          <div className={`w-2.5 h-2.5 rounded-full ${data.active ? "bg-primary animate-pulse" : data.completed ? "bg-primary/75" : "bg-muted-foreground/30"}`} />
+          <span className="text-xs font-semibold text-foreground font-mono truncate max-w-[130px]">{data.label}</span>
+        </div>
+        <p className="text-[10px] text-muted-foreground mt-1.5 pl-4 line-clamp-2">{data.description}</p>
+      </motion.div>
+      <Handle type="source" position={Position.Right} isConnectable={false} className="!opacity-0 !pointer-events-none" />
+    </div>
   )
 }
 
 function ToolNode({ data }: any) {
   return (
-    <motion.div
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className={`px-4 py-3 rounded-lg border text-left transition-all duration-300 min-w-[170px] ${
-        data.active 
-          ? "bg-accent/20 border-accent glow-purple scale-105" 
-          : data.completed
-          ? "bg-accent/5 border-accent/40 opacity-80"
-          : "bg-card/40 border-border/20 opacity-50"
-      }`}
-    >
-      <div className="flex items-center gap-2">
-        <Cpu className={`w-3.5 h-3.5 ${data.active ? "text-accent animate-spin" : data.completed ? "text-accent/80" : "text-muted-foreground/30"}`} />
-        <span className="text-xs font-semibold text-foreground font-mono truncate max-w-[130px]">{data.label}</span>
-      </div>
-      <p className="text-[10px] text-muted-foreground mt-1.5 pl-5 line-clamp-2">{data.description}</p>
-    </motion.div>
+    <div className="relative">
+      <Handle type="target" position={Position.Left} isConnectable={false} className="!opacity-0 !pointer-events-none" />
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className={`px-4 py-3 rounded-lg border text-left transition-all duration-300 min-w-[170px] ${
+          data.active 
+            ? "bg-accent/20 border-accent glow-purple scale-105" 
+            : data.completed
+            ? "bg-accent/5 border-accent/40 opacity-80"
+            : "bg-card/40 border-border/20 opacity-50"
+        }`}
+      >
+        <div className="flex items-center gap-2">
+          <Cpu className={`w-3.5 h-3.5 ${data.active ? "text-accent animate-spin" : data.completed ? "text-accent/80" : "text-muted-foreground/30"}`} />
+          <span className="text-xs font-semibold text-foreground font-mono truncate max-w-[130px]">{data.label}</span>
+        </div>
+        <p className="text-[10px] text-muted-foreground mt-1.5 pl-5 line-clamp-2">{data.description}</p>
+      </motion.div>
+      <Handle type="source" position={Position.Right} isConnectable={false} className="!opacity-0 !pointer-events-none" />
+    </div>
   )
 }
 
 function HallucinationNode({ data }: any) {
   return (
-    <motion.div
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className={`px-4 py-3 rounded-lg border text-left transition-all duration-300 min-w-[170px] ${
-        data.active 
-          ? "bg-destructive/20 border-destructive scale-105" 
-          : data.completed
-          ? "bg-destructive/5 border-destructive/40 opacity-80"
-          : "bg-card/40 border-border/20 opacity-50"
-      }`}
-      style={data.active ? { boxShadow: "0 0 15px oklch(0.577 0.245 27.325 / 0.2)" } : {}}
-    >
-      <div className="flex items-center gap-2">
-        <span className="relative flex h-2.5 w-2.5">
-          <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${data.active ? "bg-destructive" : "bg-destructive/50"}`} />
-          <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${data.active ? "bg-destructive" : "bg-destructive/60"}`} />
-        </span>
-        <span className="text-xs font-semibold text-foreground font-mono truncate max-w-[130px]">{data.label}</span>
-      </div>
-      <p className="text-[10px] text-muted-foreground mt-1.5 pl-4 line-clamp-2">{data.description}</p>
-    </motion.div>
+    <div className="relative">
+      <Handle type="target" position={Position.Left} isConnectable={false} className="!opacity-0 !pointer-events-none" />
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className={`px-4 py-3 rounded-lg border text-left transition-all duration-300 min-w-[170px] ${
+          data.active 
+            ? "bg-destructive/20 border-destructive scale-105" 
+            : data.completed
+            ? "bg-destructive/5 border-destructive/40 opacity-80"
+            : "bg-card/40 border-border/20 opacity-50"
+        }`}
+        style={data.active ? { boxShadow: "0 0 15px oklch(0.577 0.245 27.325 / 0.2)" } : {}}
+      >
+        <div className="flex items-center gap-2">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${data.active ? "bg-destructive" : "bg-destructive/50"}`} />
+            <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${data.active ? "bg-destructive" : "bg-destructive/60"}`} />
+          </span>
+          <span className="text-xs font-semibold text-foreground font-mono truncate max-w-[130px]">{data.label}</span>
+        </div>
+        <p className="text-[10px] text-muted-foreground mt-1.5 pl-4 line-clamp-2">{data.description}</p>
+      </motion.div>
+      <Handle type="source" position={Position.Right} isConnectable={false} className="!opacity-0 !pointer-events-none" />
+    </div>
   )
 }
 
 function OutputNode({ data }: any) {
   return (
-    <motion.div
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className={`px-4 py-3 rounded-lg border text-left transition-all duration-300 min-w-[170px] ${
-        data.active 
-          ? "bg-chart-4/20 border-chart-4 scale-105" 
-          : data.completed
-          ? "bg-chart-4/5 border-chart-4/40 opacity-80"
-          : "bg-card/40 border-border/20 opacity-50"
-      }`}
-    >
-      <div className="flex items-center gap-2">
-        <Compass className={`w-3.5 h-3.5 ${data.active ? "text-chart-4 animate-bounce" : data.completed ? "text-chart-4/80" : "text-muted-foreground/30"}`} />
-        <span className="text-xs font-semibold text-foreground font-mono truncate max-w-[130px]">{data.label}</span>
-      </div>
-      <p className="text-[10px] text-muted-foreground mt-1.5 pl-5 line-clamp-2">{data.description}</p>
-    </motion.div>
+    <div className="relative">
+      <Handle type="target" position={Position.Left} isConnectable={false} className="!opacity-0 !pointer-events-none" />
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className={`px-4 py-3 rounded-lg border text-left transition-all duration-300 min-w-[170px] ${
+          data.active 
+            ? "bg-chart-4/20 border-chart-4 scale-105" 
+            : data.completed
+            ? "bg-chart-4/5 border-chart-4/40 opacity-80"
+            : "bg-card/40 border-border/20 opacity-50"
+        }`}
+      >
+        <div className="flex items-center gap-2">
+          <Compass className={`w-3.5 h-3.5 ${data.active ? "text-chart-4 animate-bounce" : data.completed ? "text-chart-4/80" : "text-muted-foreground/30"}`} />
+          <span className="text-xs font-semibold text-foreground font-mono truncate max-w-[130px]">{data.label}</span>
+        </div>
+        <p className="text-[10px] text-muted-foreground mt-1.5 pl-5 line-clamp-2">{data.description}</p>
+      </motion.div>
+      <Handle type="source" position={Position.Right} isConnectable={false} className="!opacity-0 !pointer-events-none" />
+    </div>
   )
 }
 
@@ -114,7 +131,7 @@ const nodeTypes = {
   thought: ThoughtNode,
   tool: ToolNode,
   hallucination: HallucinationNode,
-  output: OutputNode,
+  safeOutput: OutputNode,
 }
 
 interface DashboardReplayProps {
@@ -141,6 +158,7 @@ export function DashboardReplay({ trace }: DashboardReplayProps) {
     // Ensure positions are valid, calculate clean tree layout if positions are missing
     const generatedNodes = trace.nodes.map((n: any, idx: number) => ({
       ...n,
+      type: n.type === "output" ? "safeOutput" : n.type,
       position: n.position || { x: 50 + idx * 220, y: 100 + (idx % 2) * 50 },
       sourcePosition: Position.Right,
       targetPosition: Position.Left,
@@ -235,7 +253,7 @@ export function DashboardReplay({ trace }: DashboardReplayProps) {
   }
 
   return (
-    <div className="w-full flex flex-col h-[520px] bg-black/40 border border-border/40 rounded-2xl overflow-hidden backdrop-blur-md relative">
+    <div className="w-full flex flex-col h-[650px] bg-black/40 border border-border/40 rounded-2xl overflow-hidden backdrop-blur-md relative">
       
       {/* Top Header info */}
       <div className="bg-white/5 border-b border-border/20 px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shrink-0 z-10">
@@ -286,6 +304,8 @@ export function DashboardReplay({ trace }: DashboardReplayProps) {
             fitView
             fitViewOptions={{ padding: 0.3 }}
             proOptions={{ hideAttribution: true }}
+            nodesFocusable={false}
+            selectNodesOnDrag={false}
             nodesDraggable={false}
             nodesConnectable={false}
             elementsSelectable={false}

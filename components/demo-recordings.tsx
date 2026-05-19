@@ -93,7 +93,7 @@ export function DemoRecordings() {
         <div className="absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-gradient-radial-cyan opacity-[0.04]" />
       </div>
 
-      <div className="container mx-auto px-6 max-w-6xl relative z-10">
+      <div className="site-container max-w-6xl relative z-10">
         
         {/* Section Header */}
         <motion.div

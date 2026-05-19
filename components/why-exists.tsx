@@ -11,7 +11,7 @@ export function WhyExists() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-radial-cyan opacity-[0.04]" />
       </div>
 
-      <div className="container mx-auto px-6 relative z-10 max-w-5xl">
+      <div className="site-container relative z-10 max-w-5xl">
         <div className="grid md:grid-cols-12 gap-12 items-center">
 
           {/* LEFT: Core Emotional Hook (7 cols) */}

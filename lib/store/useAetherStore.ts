@@ -1,16 +1,5 @@
 import { create } from "zustand"
-import { supabase, isSupabaseConfigured, type Trace } from "../supabase"
-
-// Client-side cookie helper for local-first middleware coordination
-const setSessionCookie = (active: boolean) => {
-  if (typeof document !== "undefined") {
-    if (active) {
-      document.cookie = "aether_session_active=true; path=/; max-age=31536000; SameSite=Lax"
-    } else {
-      document.cookie = "aether_session_active=; path=/; max-age=0; SameSite=Lax"
-    }
-  }
-}
+import { getSupabaseClient, isSupabaseConfigured, type Trace } from "../supabase"
 
 interface AetherState {
   user: any | null
@@ -21,12 +10,14 @@ interface AetherState {
   activeReplayTrace: Trace | null
   error: string | null
   isCloudSyncEnabled: boolean
-  
+
   // Auth actions
   checkSession: () => Promise<void>
   signUp: (email: string, password: string) => Promise<boolean>
   signIn: (email: string, password: string) => Promise<boolean>
+  signInWithGoogle: (redirectTo?: string) => Promise<boolean>
   signOut: () => Promise<void>
+  resetPassword: (email: string, redirectTo?: string) => Promise<boolean>
   clearError: () => void
 
   // Trace actions
@@ -37,21 +28,26 @@ interface AetherState {
   getPublicTrace: (id: string) => Promise<Trace | null>
 }
 
+let authListenerBound = false
+
 export const useAetherStore = create<AetherState>((set, get) => {
-  // Set up auth state change listener in the background on the client side
-  if (typeof window !== "undefined") {
-    supabase.auth.onAuthStateChange((event: string, session: any) => {
-      const hasSession = !!session
-      setSessionCookie(hasSession)
-      set({ 
-        session, 
+  const bindAuthListener = () => {
+    if (authListenerBound || !isSupabaseConfigured || typeof window === "undefined") return
+
+    const supabase = getSupabaseClient()
+    authListenerBound = true
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      set({
+        session,
         user: session?.user || null,
-        isCloudSyncEnabled: isSupabaseConfigured
+        isCloudSyncEnabled: true,
       })
-      if (session) {
+
+      if (session?.user) {
         get().fetchTraces()
       } else {
-        set({ traces: [] })
+        set({ traces: [], activeReplayTrace: null })
       }
     })
   }
@@ -59,7 +55,7 @@ export const useAetherStore = create<AetherState>((set, get) => {
   return {
     user: null,
     session: null,
-    isLoading: true,
+    isLoading: false,
     isSyncing: false,
     traces: [],
     activeReplayTrace: null,
@@ -70,129 +66,247 @@ export const useAetherStore = create<AetherState>((set, get) => {
 
     checkSession: async () => {
       set({ isLoading: true, error: null })
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession()
-        if (error) throw error
-        const hasSession = !!session
-        setSessionCookie(hasSession)
-        set({ 
-          session, 
-          user: session?.user || null, 
+
+      if (!isSupabaseConfigured) {
+        set({
           isLoading: false,
-          isCloudSyncEnabled: isSupabaseConfigured
+          isCloudSyncEnabled: false,
+          error: "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.",
         })
-        if (session) {
+        return
+      }
+
+      try {
+        bindAuthListener()
+        const supabase = getSupabaseClient()
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession()
+
+        if (error) throw error
+
+        set({
+          session,
+          user: session?.user || null,
+          isLoading: false,
+          isCloudSyncEnabled: true,
+        })
+
+        if (session?.user) {
           await get().fetchTraces()
         }
       } catch (err: any) {
-        set({ error: err.message, isLoading: false })
+        set({ error: err.message || "Unable to check session", isLoading: false })
       }
     },
 
     signUp: async (email, password) => {
       set({ isLoading: true, error: null })
+
+      if (!isSupabaseConfigured) {
+        set({
+          isLoading: false,
+          error: "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.",
+        })
+        return false
+      }
+
       try {
-        const { data, error } = await supabase.auth.signUp({ email, password })
+        const supabase = getSupabaseClient()
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+          },
+        })
+
         if (error) throw error
-        
-        // Mock client auto-signs in, but real client might require email verification depending on supabase settings.
-        // We set session based on what was returned.
-        if (data.session) {
-          setSessionCookie(true)
-          set({ 
-            session: data.session, 
-            user: data.session.user, 
-            isLoading: false 
-          })
+
+        set({
+          session: data.session ?? null,
+          user: data.user ?? null,
+          isLoading: false,
+        })
+
+        if (data.session?.user) {
           await get().fetchTraces()
-          return true
         }
-        
-        set({ isLoading: false })
+
         return true
       } catch (err: any) {
-        set({ error: err.message, isLoading: false })
+        set({ error: err.message || "Sign-up failed", isLoading: false })
         return false
       }
     },
 
     signIn: async (email, password) => {
       set({ isLoading: true, error: null })
+
+      if (!isSupabaseConfigured) {
+        set({
+          isLoading: false,
+          error: "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.",
+        })
+        return false
+      }
+
       try {
+        const supabase = getSupabaseClient()
         const { data, error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
-        
-        const hasSession = !!data.session
-        setSessionCookie(hasSession)
-        set({ 
-          session: data.session, 
-          user: data.session?.user || null, 
-          isLoading: false 
+
+        set({
+          session: data.session,
+          user: data.user,
+          isLoading: false,
         })
-        if (data.session) {
+
+        if (data.session?.user) {
           await get().fetchTraces()
         }
+
         return true
       } catch (err: any) {
-        set({ error: err.message, isLoading: false })
+        set({ error: err.message || "Sign-in failed", isLoading: false })
+        return false
+      }
+    },
+
+    signInWithGoogle: async (redirectTo) => {
+      set({ isLoading: true, error: null })
+
+      if (!isSupabaseConfigured) {
+        set({
+          isLoading: false,
+          error: "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.",
+        })
+        return false
+      }
+
+      try {
+        const supabase = getSupabaseClient()
+        const callbackUrl = `${window.location.origin}/auth/callback${redirectTo ? `?next=${encodeURIComponent(redirectTo)}` : ""}`
+
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo: callbackUrl },
+        })
+
+        if (error) throw error
+
+        set({ isLoading: false })
+        return true
+      } catch (err: any) {
+        set({ error: err.message || "Google sign-in failed", isLoading: false })
         return false
       }
     },
 
     signOut: async () => {
       set({ isLoading: true, error: null })
+
+      if (!isSupabaseConfigured) {
+        set({
+          session: null,
+          user: null,
+          traces: [],
+          activeReplayTrace: null,
+          isLoading: false,
+          isCloudSyncEnabled: false,
+        })
+        return
+      }
+
       try {
+        const supabase = getSupabaseClient()
         const { error } = await supabase.auth.signOut()
         if (error) throw error
-        setSessionCookie(false)
-        set({ 
-          session: null, 
-          user: null, 
-          traces: [], 
-          activeReplayTrace: null, 
-          isLoading: false 
+
+        set({
+          session: null,
+          user: null,
+          traces: [],
+          activeReplayTrace: null,
+          isLoading: false,
         })
       } catch (err: any) {
-        set({ error: err.message, isLoading: false })
+        set({ error: err.message || "Sign-out failed", isLoading: false })
+      }
+    },
+
+    resetPassword: async (email, redirectTo) => {
+      set({ isLoading: true, error: null })
+
+      if (!isSupabaseConfigured) {
+        set({
+          isLoading: false,
+          error: "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.",
+        })
+        return false
+      }
+
+      try {
+        const supabase = getSupabaseClient()
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: redirectTo || `${window.location.origin}/auth/callback?type=recovery`,
+        })
+
+        if (error) throw error
+
+        set({ isLoading: false })
+        return true
+      } catch (err: any) {
+        set({ error: err.message || "Password reset failed", isLoading: false })
+        return false
       }
     },
 
     fetchTraces: async () => {
-      if (get().isSyncing) return
+      if (get().isSyncing || !isSupabaseConfigured) return
+
       const user = get().user
       set({ isSyncing: true, error: null })
+
       try {
+        const supabase = getSupabaseClient()
         let query = supabase.from("traces").select("*")
-        
-        if (user) {
+
+        if (user?.id) {
           query = query.eq("user_id", user.id)
         } else {
-          // If not logged in, only fetch public traces
           query = query.eq("is_public", true)
         }
-        
+
         const { data, error } = await query.order("created_at", { ascending: false })
+
         if (error) throw error
-        
+
         set({ traces: data || [], isSyncing: false })
       } catch (err: any) {
-        set({ error: err.message, isSyncing: false })
+        set({ error: err.message || "Failed to fetch traces", isSyncing: false })
       }
     },
 
     uploadTrace: async (title, description, nodes, edges, durationMs = 0) => {
+      if (!isSupabaseConfigured) {
+        set({ error: "Supabase is not configured." })
+        return null
+      }
+
       const user = get().user
       set({ isSyncing: true, error: null })
-      try {
-        const confidenceScores = nodes
-          .map(n => n.data?.confidence || (n.type === "hallucination" ? 0.3 : 1.0))
-          .filter(c => typeof c === "number")
-        
-        const maxConfidence = confidenceScores.length > 0 
-          ? Math.min(...confidenceScores) // Let's treat the lowest confidence score as our bottleneck (observability metric)
-          : 1.0
 
-        const newTraceData = {
+      try {
+        const supabase = getSupabaseClient()
+        const confidenceScores = nodes
+          .map((n: any) => n.data?.confidence || (n.type === "hallucination" ? 0.3 : 1.0))
+          .filter((c: any) => typeof c === "number")
+
+        const maxConfidence = confidenceScores.length > 0 ? Math.min(...confidenceScores) : 1.0
+
+        const payload = {
           user_id: user?.id || null,
           title,
           description,
@@ -200,67 +314,77 @@ export const useAetherStore = create<AetherState>((set, get) => {
           edges,
           event_count: nodes.length,
           max_confidence: maxConfidence,
-          is_public: !user, // Traces created when logged out are public simulation traces
-          duration_ms: durationMs
+          is_public: !user,
+          duration_ms: durationMs,
         }
 
-        const { data, error } = await supabase.from("traces").insert(newTraceData).select()
+        const { data, error } = await supabase.from("traces").insert(payload).select().single()
         if (error) throw error
-        
-        const savedTrace = data?.[0] || null
-        if (savedTrace) {
-          set(state => ({
-            traces: [savedTrace, ...state.traces],
-            isSyncing: false
-          }))
-          return savedTrace
-        }
-        set({ isSyncing: false })
-        return null
+
+        set((state) => ({
+          traces: [data as Trace, ...state.traces],
+          isSyncing: false,
+        }))
+
+        return data as Trace
       } catch (err: any) {
-        set({ error: err.message, isSyncing: false })
+        set({ error: err.message || "Failed to upload trace", isSyncing: false })
         return null
       }
     },
 
     deleteTrace: async (id) => {
+      if (!isSupabaseConfigured) {
+        set({ error: "Supabase is not configured." })
+        return false
+      }
+
       set({ isSyncing: true, error: null })
+
       try {
+        const supabase = getSupabaseClient()
         const { error } = await supabase.from("traces").delete().eq("id", id)
         if (error) throw error
-        
-        set(state => ({
-          traces: state.traces.filter(t => t.id !== id),
+
+        set((state) => ({
+          traces: state.traces.filter((trace) => trace.id !== id),
           activeReplayTrace: state.activeReplayTrace?.id === id ? null : state.activeReplayTrace,
-          isSyncing: false
+          isSyncing: false,
         }))
+
         return true
       } catch (err: any) {
-        set({ error: err.message, isSyncing: false })
+        set({ error: err.message || "Failed to delete trace", isSyncing: false })
         return false
       }
     },
 
-    setActiveReplayTrace: (trace) => {
-      set({ activeReplayTrace: trace })
-    },
+    setActiveReplayTrace: (trace) => set({ activeReplayTrace: trace }),
 
     getPublicTrace: async (id) => {
       set({ isLoading: true, error: null })
+
+      if (!isSupabaseConfigured) {
+        set({ isLoading: false, error: "Supabase is not configured." })
+        return null
+      }
+
       try {
+        const supabase = getSupabaseClient()
         const { data, error } = await supabase
           .from("traces")
           .select("*")
           .eq("id", id)
           .single()
-        
-        set({ isLoading: false })
+
         if (error) throw error
+
+        set({ isLoading: false })
         return data as Trace
       } catch (err: any) {
-        set({ error: err.message, isLoading: false })
+        set({ error: err.message || "Trace not found", isLoading: false })
         return null
       }
-    }
+    },
   }
 })
