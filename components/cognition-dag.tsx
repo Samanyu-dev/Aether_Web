@@ -158,6 +158,21 @@ export function CognitionDAG() {
     return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
   }, [EXE_ORDER.length])
 
+  const reactFlowInstance = useRef<any>(null)
+
+  // Auto-pan camera
+  useEffect(() => {
+    if (activeIdx >= 0 && activeIdx < EXE_ORDER.length && reactFlowInstance.current) {
+      const activeNode = INITIAL_NODES.find(n => n.id === EXE_ORDER[activeIdx])
+      if (activeNode) {
+        // Offset by node half width (125) and half height (40)
+        reactFlowInstance.current.setCenter(activeNode.position.x + 125, activeNode.position.y + 40, { zoom: 1.1, duration: 800 })
+      }
+    } else if (activeIdx === -1 && reactFlowInstance.current) {
+      reactFlowInstance.current.fitView({ padding: 0.15, duration: 1000 })
+    }
+  }, [activeIdx])
+
   // Sync graph state with activeIdx
   useEffect(() => {
     const activeIds = new Set(EXE_ORDER.slice(0, activeIdx + 1))
@@ -234,6 +249,7 @@ export function CognitionDAG() {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           nodeTypes={nodeTypes}
+          onInit={(instance) => { reactFlowInstance.current = instance }}
           fitView
           fitViewOptions={{ padding: 0.15 }}
           proOptions={{ hideAttribution: true }}

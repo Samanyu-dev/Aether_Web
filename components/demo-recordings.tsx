@@ -208,7 +208,7 @@ export function DemoRecordings() {
 
       </div>
       <Dialog open={!!activeStory} onOpenChange={(open) => !open && setActiveStory(null)}>
-        <DialogContent className="max-w-5xl bg-[#06060c] border-border/30 p-0 overflow-hidden" showCloseButton={true}>
+        <DialogContent className="max-w-[95vw] lg:max-w-7xl bg-[#06060c] border-border/30 p-0 overflow-hidden" showCloseButton={true}>
           <DialogHeader className="px-6 py-4 border-b border-border/20 bg-card/40">
             <DialogTitle className="text-xl font-bold flex items-center gap-3">
               <ShieldCheck className="w-5 h-5 text-primary" />

@@ -154,7 +154,23 @@ export function LiveCognitionReplay() {
     setShowRiskAlert(s === 4)
   }, [setNodes, setEdges])
 
-  useEffect(() => { applyStep(step) }, [step, applyStep])
+  const reactFlowInstance = useRef<any>(null)
+
+  useEffect(() => { 
+    applyStep(step) 
+    
+    // Auto-pan camera
+    if (reactFlowInstance.current) {
+      const currentNodes = reactFlowInstance.current.getNodes()
+      if (currentNodes.length > step) {
+        const activeNode = currentNodes[step]
+        if (activeNode) {
+          // Offset by node half width (125) and half height (44)
+          reactFlowInstance.current.setCenter(activeNode.position.x + 125, activeNode.position.y + 44, { zoom: 1.1, duration: 800 })
+        }
+      }
+    }
+  }, [step, applyStep])
 
   // ── Playback timer ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -287,6 +303,7 @@ export function LiveCognitionReplay() {
                 nodes={nodes} edges={edges}
                 onNodesChange={onNodesChange} onEdgesChange={onEdgesChange}
                 nodeTypes={nodeTypes}
+                onInit={(instance) => { reactFlowInstance.current = instance }}
                 fitView fitViewOptions={{ padding:0.08, minZoom:0.6, maxZoom:1.1 }}
                 proOptions={{ hideAttribution:true }}
                 panOnDrag zoomOnScroll zoomOnPinch
