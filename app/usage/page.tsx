@@ -1,12 +1,20 @@
+"use client"
+
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
+
 export default function UsagePage() {
+  const router = useRouter()
+  useEffect(() => {
+    router.push("/dashboard?tab=billing")
+  }, [router])
+
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      <section className="site-container py-space-120">
-        <h1 className="text-display-sm font-semibold">Usage</h1>
-        <p className="mt-space-16 text-body-md text-muted-foreground">
-          Usage metrics are shown in the dashboard and this route is reserved for expanded billing analytics.
-        </p>
-      </section>
+    <main className="min-h-screen bg-[#05050a] flex items-center justify-center font-mono text-xs text-primary">
+      <div className="flex items-center gap-2">
+        <span className="w-2.5 h-2.5 rounded-full bg-primary animate-ping" />
+        <span>Redirecting to usage parameters...</span>
+      </div>
     </main>
   )
 }

@@ -16,6 +16,7 @@ interface AetherState {
   signUp: (email: string, password: string) => Promise<boolean>
   signIn: (email: string, password: string) => Promise<boolean>
   signInWithGoogle: (redirectTo?: string) => Promise<boolean>
+  signInMockGoogle: (email?: string) => Promise<boolean>
   signOut: () => Promise<void>
   resetPassword: (email: string, redirectTo?: string) => Promise<boolean>
   clearError: () => void
@@ -204,6 +205,41 @@ export const useAetherStore = create<AetherState>((set, get) => {
       }
     },
 
+    signInMockGoogle: async (email = "beta-developer@google.aether") => {
+      set({ isLoading: true, error: null })
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 800))
+        const mockSession = {
+          access_token: "mock-google-session-jwt-token-obs",
+          token_type: "bearer",
+          expires_in: 3600,
+          refresh_token: "mock-google-session-refresh-token",
+          user: {
+            id: "google-mock-beta-dev",
+            email: email,
+            email_confirmed_at: new Date().toISOString(),
+            last_sign_in_at: new Date().toISOString(),
+            user_metadata: {
+              full_name: "Beta Developer",
+              avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=96&h=96&fit=crop&crop=face",
+              provider: "google",
+              providers: ["google"]
+            }
+          }
+        }
+        set({
+          session: mockSession,
+          user: mockSession.user,
+          isLoading: false
+        })
+        await get().fetchTraces()
+        return true
+      } catch (err: any) {
+        set({ error: err.message || "Simulated Google sign-in failed", isLoading: false })
+        return false
+      }
+    },
+
     signOut: async () => {
       set({ isLoading: true, error: null })
 
@@ -268,6 +304,56 @@ export const useAetherStore = create<AetherState>((set, get) => {
 
       const user = get().user
       set({ isSyncing: true, error: null })
+
+      if (user?.id === "google-mock-beta-dev") {
+        const mockTraces: Trace[] = [
+          {
+            id: "mock-trace-research-agent",
+            title: "Multi-Tool Research Agent",
+            description: "Deep-retrieval lora config model research with GPU scaling analyzer.",
+            nodes: [
+              { id: "1", label: "Retrieve Memory", type: "input", position: { x: 100, y: 100 }, data: { title: "Retrieve Memory", confidence: 0.95, duration: 120 } },
+              { id: "2", label: "GPU Profiler", type: "default", position: { x: 250, y: 180 }, data: { title: "GPU Profiler", confidence: 0.98, duration: 450 } },
+              { id: "3", label: "Safety Analyzer", type: "default", position: { x: 400, y: 250 }, data: { title: "Safety Analyzer", confidence: 0.88, duration: 180 } },
+              { id: "4", label: "Consensus Resolved", type: "output", position: { x: 550, y: 320 }, data: { title: "Consensus Resolved", confidence: 0.99, duration: 80 } }
+            ] as any,
+            edges: [
+              { id: "e1-2", source: "1", target: "2" },
+              { id: "e2-3", source: "2", target: "3" },
+              { id: "e3-4", source: "3", target: "4" }
+            ] as any,
+            created_at: new Date().toISOString(),
+            is_public: false,
+            event_count: 4,
+            duration_ms: 830,
+            max_confidence: 0.88
+          },
+          {
+            id: "mock-trace-devops-assistant",
+            title: "Autonomous DevOps Assistant",
+            description: "Production container shell argument injection safety check logic.",
+            nodes: [
+              { id: "1", label: "Container Shell", type: "input", position: { x: 100, y: 100 }, data: { title: "Container Shell", confidence: 0.94, duration: 140 } },
+              { id: "2", label: "Argument Injection Audit", type: "default", position: { x: 300, y: 180 }, data: { title: "Argument Injection Audit", confidence: 0.42, duration: 320 } },
+              { id: "3", label: "Sandbox Quarantine", type: "output", position: { x: 500, y: 260 }, data: { title: "Sandbox Quarantine", confidence: 0.97, duration: 250 } }
+            ] as any,
+            edges: [
+              { id: "e1-2", source: "1", target: "2" },
+              { id: "e2-3", source: "2", target: "3" }
+            ] as any,
+            created_at: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
+            is_public: false,
+            event_count: 3,
+            duration_ms: 710,
+            max_confidence: 0.42
+          }
+        ]
+        set({ traces: mockTraces, isSyncing: false })
+        if (!get().activeReplayTrace) {
+          set({ activeReplayTrace: mockTraces[0] })
+        }
+        return
+      }
 
       try {
         const supabase = getSupabaseClient()

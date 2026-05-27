@@ -3,6 +3,17 @@
 
 create extension if not exists "pgcrypto";
 
+-- Profiles table storing tier, role, and quotas
+create table if not exists public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  email text,
+  role text not null default 'free_user',
+  plan text not null default 'free',
+  quota_traces_limit int not null default 25,
+  quota_traces_used int not null default 0,
+  created_at timestamptz not null default now()
+);
+
 create table if not exists public.traces (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
@@ -44,10 +55,25 @@ create table if not exists public.usage_snapshots (
   storage_mb numeric not null default 0
 );
 
+-- RLS Enablement
+alter table public.profiles enable row level security;
 alter table public.traces enable row level security;
 alter table public.usage_snapshots enable row level security;
 alter table public.waitlist_requests enable row level security;
 
+-- Profiles Policies
+create policy if not exists "users_can_read_own_profile"
+on public.profiles
+for select
+using (auth.uid() = id);
+
+create policy if not exists "users_can_update_own_profile"
+on public.profiles
+for update
+using (auth.uid() = id)
+with check (auth.uid() = id);
+
+-- Traces Policies
 create policy if not exists "users_can_manage_own_traces"
 on public.traces
 for all
@@ -59,13 +85,35 @@ on public.traces
 for select
 using (is_public = true);
 
+-- Usage Snapshots Policies
 create policy if not exists "users_can_read_own_usage"
 on public.usage_snapshots
 for select
 using (auth.uid() = user_id);
 
+-- Waitlist Policies
 create policy if not exists "waitlist_insert_open"
 on public.waitlist_requests
 for insert
 to anon, authenticated
 with check (true);
+
+-- Automated trigger to create profile upon signup
+create or replace function public.handle_new_user()
+returns trigger as $$
+begin
+  if new.email = 'allipuramsamanyu@gmail.com' then
+    insert into public.profiles (id, email, role, plan, quota_traces_limit, quota_traces_used)
+    values (new.id, new.email, 'owner', 'enterprise', 999999, 0);
+  else
+    insert into public.profiles (id, email, role, plan, quota_traces_limit, quota_traces_used)
+    values (new.id, new.email, 'free_user', 'free', 25, 0);
+  end if;
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create or replace trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
+

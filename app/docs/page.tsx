@@ -1,6 +1,8 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import Link from "next/link"
+import { useAetherStore } from "@/lib/store/useAetherStore"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
   Terminal, 
@@ -61,7 +63,7 @@ const SIDEBAR_GROUPS: SidebarGroup[] = [
     ]
   },
   {
-    title: "OBSERVABILITY & SAFETY",
+    title: "COGNITION DEBUGGING & SAFETY",
     items: [
       { id: "hallucination", label: "Hallucination Detection", icon: ShieldAlert },
       { id: "safety", label: "Safety & Correction", icon: Layers },
@@ -74,6 +76,12 @@ const SIDEBAR_GROUPS: SidebarGroup[] = [
 type CodeLang = "python" | "typescript" | "bash"
 
 export default function DocsPage() {
+  const { session, signOut, checkSession } = useAetherStore()
+
+  useEffect(() => {
+    checkSession()
+  }, [checkSession])
+
   const [activeSection, setActiveSection] = useState<string>("intro")
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -164,12 +172,12 @@ export default function DocsPage() {
         <div className="max-w-[1536px] mx-auto px-6 h-16 flex items-center justify-between">
           {/* Left: Brand */}
           <div className="flex items-center gap-6">
-            <a href="/" className="flex items-center gap-2.5 group">
+            <Link href="/" className="flex items-center gap-2.5 group">
               <img src="/logo.png" alt="Aether Logo" className="w-6 h-6 object-contain transition-transform duration-300 group-hover:scale-110" />
               <span className="font-mono text-sm font-black tracking-widest text-white group-hover:text-primary transition-colors">
                 AETHER
               </span>
-            </a>
+            </Link>
             
             {/* Version Badges & Beta */}
             <div className="hidden sm:flex items-center gap-2 select-none">
@@ -184,14 +192,20 @@ export default function DocsPage() {
 
           {/* Center: Sticky Nav Items */}
           <nav className="hidden lg:flex items-center gap-1.5 text-xs font-mono">
-            {["Overview", "Quickstart", "SDK", "Replay Engine", "Integrations", "API", "Pricing"].map(navItem => (
-              <a
-                key={navItem}
-                href={`#${navItem.toLowerCase()}`}
+            {[
+              { label: "Overview", href: "/#replay" },
+              { label: "Quickstart", href: "/#sdk" },
+              { label: "SDK", href: "/#sdk" },
+              { label: "Pricing", href: "/pricing" },
+              { label: "Dashboard", href: "/dashboard" },
+            ].map(navItem => (
+              <Link
+                key={navItem.label}
+                href={navItem.href}
                 className="px-3 py-1.5 rounded-lg text-muted-foreground hover:text-white transition-colors relative hover:bg-white/5"
               >
-                {navItem}
-              </a>
+                {navItem.label}
+              </Link>
             ))}
           </nav>
 
@@ -218,12 +232,36 @@ export default function DocsPage() {
               <Github className="w-4 h-4" />
             </a>
 
-            <button 
-              onClick={() => setSearchOpen(true)}
-              className="hidden md:flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white hover:bg-white/90 text-black text-[11px] font-bold font-mono transition-all active:scale-95"
-            >
-              Start Beta
-            </button>
+            {session ? (
+              <div className="flex items-center gap-2">
+                <Link href="/dashboard">
+                  <Button size="sm" className="glow-cyan-subtle font-mono text-[11px] font-bold h-8">
+                    Dashboard
+                  </Button>
+                </Link>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={signOut}
+                  className="text-muted-foreground hover:text-destructive hover:bg-destructive/5 text-[11px] font-mono h-8"
+                >
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-white text-[11px] font-mono h-8">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button size="sm" className="glow-cyan-subtle font-mono text-[11px] font-bold h-8">
+                    Start Beta
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -310,7 +348,7 @@ export default function DocsPage() {
                       <span className="text-gradient-cyan">like a debugger</span>.
                     </h1>
                     <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">
-                      Aether is a production-grade, local-first AI observability platform designed for engineering autonomous agents. Capture logic paths, tool invocations, and live hallucinations completely offline.
+                      Aether is a production-grade, local-first AI cognition debugger designed for engineering autonomous agents. Capture logic paths, tool invocations, and live hallucinations completely offline.
                     </p>
                   </div>
 
@@ -363,7 +401,7 @@ export default function DocsPage() {
 
                   {/* Real developer architecture explain */}
                   <div className="space-y-3">
-                    <h3 className="text-sm font-mono font-bold text-white">Why AI Observability Matters</h3>
+                    <h3 className="text-sm font-mono font-bold text-white">Why AI Cognition Debugging Matters</h3>
                     <p className="text-xs text-muted-foreground leading-relaxed">
                       Unlike traditional microservices, autonomous agents propagate logic using unstructured cognitive decisions, tool loops, and dynamic corrections. Standard logs cannot capture the trajectory of an agent's reasoning. Aether parses unstructured decision contexts into deterministic, high-performance traces.
                     </p>

@@ -25,19 +25,19 @@ function CinematicNode({ data }: { data: { label: string; sub: string; kind: Nod
   const isDone   = !!data.completed
 
   return (
-    <div style={{ position: "relative", width: 250 }}>
+    <div style={{ position: "relative", width: 200 }}>
       <Handle type="target" position={Position.Left} style={{ opacity: 0, pointerEvents: "none" }} />
       <motion.div
         animate={{ scale: isActive ? 1.04 : 1 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
         style={{
-          width: 250,
-          minHeight: 88,
+          width: 200,
+          minHeight: 80,
           borderRadius: 14,
           border: `2px solid ${isActive ? cfg.accent : isDone ? cfg.border + "cc" : "#ffffff12"}`,
           background: isActive ? cfg.bg : isDone ? "rgba(255,255,255,0.03)" : "rgba(10,10,16,0.7)",
           boxShadow: isActive ? cfg.glow : isDone ? "none" : "none",
-          padding: "12px 16px",
+          padding: "10px 14px",
           display: "flex",
           flexDirection: "column",
           gap: 6,
@@ -57,10 +57,10 @@ function CinematicNode({ data }: { data: { label: string; sub: string; kind: Nod
           {isActive && <span style={{ width: 6, height: 6, borderRadius: "50%", background: cfg.accent, animation: "pulse 1s infinite" }} />}
           {isDone && !isActive && <span style={{ fontSize: 10, color: cfg.accent }}>✓</span>}
         </div>
-        <div style={{ fontSize: 13, fontWeight: 700, color: isActive || isDone ? "#f0f0f0" : "#ffffff30", lineHeight: 1.3 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: isActive || isDone ? "#f0f0f0" : "#ffffff30", lineHeight: 1.3 }}>
           {data.label}
         </div>
-        <div style={{ fontSize: 10, color: isActive ? "#8898aa" : "#ffffff18", lineHeight: 1.4 }}>
+        <div style={{ fontSize: 9.5, color: isActive ? "#8898aa" : "#ffffff18", lineHeight: 1.4 }}>
           {data.sub}
         </div>
       </motion.div>
@@ -76,11 +76,11 @@ const nodeTypes = {
   safeOutput:   CinematicNode,
 }
 
-// ─── Initial layout — Horizontally compressed column spacing for larger zoom scale
+// ─── Initial layout — Spacious horizontally detached column spacing
 const X = [40, 310, 580, 850, 1120, 1390, 1660]
 const MID_Y = 240
-const HIGH_Y = 110
-const LOW_Y  = 370
+const HIGH_Y = 100
+const LOW_Y  = 380
 
 const BASE_NODES: Node[] = [
   { id:"1", type:"thought",       position:{ x:X[0], y:MID_Y }, data:{ label:"User Input",      sub:"Prune DevOps logs safely",           kind:"thought"       } as Record<string,unknown>, sourcePosition:Position.Right, targetPosition:Position.Left },
@@ -165,8 +165,8 @@ export function LiveCognitionReplay() {
       if (currentNodes.length > step) {
         const activeNode = currentNodes[step]
         if (activeNode) {
-          // Offset by node half width (125) and half height (44)
-          reactFlowInstance.current.setCenter(activeNode.position.x + 125, activeNode.position.y + 44, { zoom: 1.1, duration: 800 })
+          // Offset by node half width (100) and half height (40)
+          reactFlowInstance.current.setCenter(activeNode.position.x + 100, activeNode.position.y + 40, { zoom: 1.1, duration: 800 })
         }
       }
     }

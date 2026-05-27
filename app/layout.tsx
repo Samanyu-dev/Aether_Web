@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Aether — AI Cognition Observability',
-  description: 'Visualize AI reasoning, tool usage, memory retrieval, and hallucinations in realtime through lightweight cinematic cognition replay.',
+  title: 'Aether — Local-First AI Cognition Debugger',
+  description: 'Step through AI thoughts, tool calls, vector retrieves, and self-correction paths in an interactive local replay timeline. Chrome DevTools for AI cognition.',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -54,7 +54,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <CursorGlow />
         {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        <Analytics />
       </body>
     </html>
   )

@@ -82,7 +82,7 @@ export function LocalFirstShowcase() {
             transition={{ delay: 0.1 }}
             className="text-display-md font-semibold tracking-tight mb-6"
           >
-            Observability <span className="text-gradient-cyan">Fully Local-First</span>
+            Debugging <span className="text-gradient-cyan">Fully Local-First</span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}

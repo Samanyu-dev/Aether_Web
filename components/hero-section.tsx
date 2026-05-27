@@ -8,16 +8,18 @@ import { CognitionDAG } from "./cognition-dag"
 import Link from "next/link"
 
 const ECOSYSTEM_BADGES = [
-  { label: "LangChain", color: "text-emerald-400 border-emerald-500/30 bg-emerald-500/8" },
-  { label: "CrewAI",    color: "text-blue-400 border-blue-500/30 bg-blue-500/8" },
   { label: "OpenAI SDK",color: "text-primary border-primary/30 bg-primary/8" },
+  { label: "LangChain", color: "text-emerald-400 border-emerald-500/30 bg-emerald-500/8" },
+  { label: "LangGraph", color: "text-purple-400 border-purple-500/30 bg-purple-500/8" },
+  { label: "CrewAI",    color: "text-blue-400 border-blue-500/30 bg-blue-500/8" },
   { label: "AutoGen",   color: "text-accent border-accent/30 bg-accent/8" },
+  { label: "LlamaIndex",color: "text-orange-400 border-orange-500/30 bg-orange-500/8" },
 ]
 
 const FEATURE_PILLS = [
-  { icon: Zap,       label: "Real-time telemetry" },
-  { icon: GitBranch, label: "Branch replay" },
-  { icon: Shield,    label: "Guardrail events" },
+  { icon: Zap,       label: "Reasoning Replay" },
+  { icon: GitBranch, label: "Cognition Branching" },
+  { icon: Shield,    label: "Self-Correction Debug" },
 ]
 
 export function HeroSection() {
@@ -49,7 +51,7 @@ export function HeroSection() {
             {/* Status badge */}
             <p className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/8 px-3 py-1 text-xs font-semibold text-primary">
               <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
-              Local-First AI Observability
+              Local-First AI Cognition Debugger
             </p>
 
             {/* Headline */}
