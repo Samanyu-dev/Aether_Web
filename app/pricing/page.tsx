@@ -87,7 +87,7 @@ export default function PricingPage() {
             animate={{ opacity: 1, y: 0 }}
             className="inline-block px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-[10px] font-mono font-bold tracking-widest text-primary uppercase mb-4"
           >
-            Observability Licensing
+            Local-First Debugger Licensing
           </motion.span>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
@@ -103,7 +103,7 @@ export default function PricingPage() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground text-sm max-w-xl mx-auto leading-relaxed"
           >
-            Aether is local-first. We believe solo engineers should have complete observability runtime diagnostic power offline, forever, for free. Upgrade only when you sync or collaborate.
+            Aether is local-first. We believe solo engineers should have complete runtime debugger power offline, forever, for free. Upgrade only when you sync or collaborate.
           </motion.p>
         </div>
 
@@ -178,7 +178,7 @@ export default function PricingPage() {
         <div className="max-w-md mx-auto text-center mt-12 bg-black/35 border border-border/30 rounded-xl p-4 flex items-center justify-center gap-3 relative overflow-hidden">
           <Database className="w-5 h-5 text-primary shrink-0 animate-pulse" />
           <p className="text-[10px] font-mono text-muted-foreground leading-normal text-left">
-            <span className="text-white font-bold">Offline telemetry assurance:</span> Aether never aggregates or uploads metadata to our gateway without your explicit consent. Your intellectual property is completely isolated locally.
+            <span className="text-white font-bold">Offline debugger assurance:</span> Aether never aggregates or uploads trace metadata to our cloud gateway without your explicit consent. Your intellectual property is completely isolated locally.
           </p>
         </div>
 

@@ -1,4 +1,4 @@
-# Google OAuth Integration Setup Guide for Aether Observability Platform
+# Google OAuth Integration Setup Guide for Aether Platform
 
 This guide provides step-by-step instructions to configure **Google OAuth** authentication for your **Aether Platform** instance using Google Cloud Console and Supabase.
 
@@ -10,7 +10,7 @@ This guide provides step-by-step instructions to configure **Google OAuth** auth
 2. Click the project dropdown in the top navigation bar and select **New Project**. Name it `Aether Platform` (or your preferred name) and click **Create**.
 3. In the left navigation sidebar, go to **APIs & Services** > **OAuth consent screen**:
    - Choose **External** user type and click **Create**.
-   - Fill in the required **App Information** (e.g., App Name: `Aether Observability`, User Support Email: `your-email@domain.com`).
+   - Fill in the required **App Information** (e.g., App Name: `Aether`, User Support Email: `your-email@domain.com`).
    - Leave the other fields default, scroll to the bottom, and click **Save and Continue** until you return to the Dashboard.
 4. Go to **APIs & Services** > **Credentials**:
    - Click **+ Create Credentials** at the top and select **OAuth client ID**.

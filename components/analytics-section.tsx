@@ -218,7 +218,7 @@ export function AnalyticsSection() {
             Lightweight Analytics
           </span>
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-gradient-cyan">Observability</span> at a Glance
+            <span className="text-gradient-cyan">Cognition Forensics</span> at a Glance
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Real-time metrics that help you understand AI behavior without the complexity.

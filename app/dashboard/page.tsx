@@ -116,9 +116,9 @@ export default function DashboardPage() {
     replayShared: false,
   })
   const [systemLogs, setSystemLogs] = useState<string[]>([
-    "INITIALIZING LOCAL Observatorio GRAPH ENGINE...",
+    "INITIALIZING LOCAL COGNITION GRAPH ENGINE...",
     "CONNECTED local socket at .aether/sessions/live_ipc_8000.sock",
-    "WATCHING .aether/traces/ for new telemetry data..."
+    "WATCHING .aether/traces/ for new trace data..."
   ])
 
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -424,9 +424,9 @@ export default function DashboardPage() {
           <div>
             <h1 className="text-xl font-bold font-mono text-white flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              Observability Command Center
+              AI Cognition Debugger Workspace
             </h1>
-            <p className="text-xs text-muted-foreground mt-1 font-mono">Real-time LLM telemetry streams, trace capacities, and reasoning metrics</p>
+            <p className="text-xs text-muted-foreground mt-1 font-mono">Real-time LLM cognition streams, trace capacities, and reasoning metrics</p>
           </div>
           
           {/* Tab selectors */}
@@ -1055,7 +1055,7 @@ export default function DashboardPage() {
         <div className="border-t border-border/20 pt-4 space-y-3">
           <h4 className="text-xs font-bold text-white uppercase">One-Click Pairing:</h4>
           <ol className="list-decimal list-inside text-[11px] text-muted-foreground space-y-2 leading-relaxed">
-            <li>Install <strong className="text-white">Aether Observability Platform</strong> in VS Code.</li>
+            <li>Install <strong className="text-white">Aether Cognition Replay</strong> in VS Code.</li>
             <li>Click the <strong className="text-emerald-400">"Sync Session with VS Code"</strong> button above.</li>
             <li>Approve the VS Code prompt to open the custom URI callback.</li>
             <li>The extension will securely persist tokens in OS <strong className="text-white">SecretStorage</strong> and unlock Premium cloud sync!</li>
@@ -1141,7 +1141,7 @@ export default function DashboardPage() {
           <h3 className="text-sm font-bold text-white">Create Secret API Key</h3>
         </div>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          Secret keys permit your backend servers, docker orchestrators, and AI agents to sync telemetry directly into Aether's observability databases.
+          Secret keys permit your backend servers, docker orchestrators, and AI agents to sync traces directly into Aether's secure databases.
         </p>
         
         <form onSubmit={handleGenerateApiKey} className="space-y-4">

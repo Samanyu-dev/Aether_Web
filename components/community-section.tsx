@@ -34,7 +34,7 @@ export function CommunitySection() {
             Built for the <span className="text-gradient-cyan">Community</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Aether is open source and community-driven. Join thousands of developers shaping the future of AI observability.
+            Aether is open source and community-driven. Join thousands of developers shaping the future of AI agent debugging.
           </p>
         </motion.div>
 

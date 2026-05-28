@@ -28,7 +28,9 @@ import {
   Sparkles,
   Command,
   Activity,
-  Maximize2
+  Maximize2,
+  Brain,
+  AlertTriangle
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -339,81 +341,69 @@ export default function DocsPage() {
               {activeSection === "intro" && (
                 <div className="space-y-6">
                   {/* Hero Intro */}
-                  <div className="space-y-3">
-                    <span className="inline-flex items-center gap-1 text-[9px] font-mono uppercase tracking-widest text-primary font-bold px-2 py-0.5 rounded border border-primary/20 bg-primary/5">
-                      Documentation Platform
+                  <div className="space-y-4">
+                    <span className="inline-flex items-center gap-1.5 text-[9px] font-mono uppercase tracking-widest text-purple-400 font-bold px-2 py-0.5 rounded border border-purple-500/30 bg-purple-500/5 shadow-[0_0_10px_rgba(168,85,247,0.15)]">
+                      Chrome DevTools for AI Cognition
                     </span>
-                    <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white leading-tight font-mono">
-                      Observe AI cognition <br />
-                      <span className="text-gradient-cyan">like a debugger</span>.
+                    <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white leading-tight font-sans">
+                      Inspect & debug AI reasoning <br />
+                      <span className="bg-gradient-to-r from-purple-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">with real-time breakpoints</span>.
                     </h1>
-                    <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">
-                      Aether is a production-grade, local-first AI cognition debugger designed for engineering autonomous agents. Capture logic paths, tool invocations, and live hallucinations completely offline.
+                    <p className="text-xs md:text-sm text-white/60 leading-relaxed max-w-xl">
+                      Aether is a production-grade, local-first AI agent debugger. Build secure, self-healing cognitive loops with visual timeline scrubber playback, dynamic trajectory patching, and glowing memory inspection panels.
                     </p>
                   </div>
 
-                  {/* Visual Onboarding Progression */}
-                  <div className="p-5 rounded-3xl border border-border/30 bg-[#070913]/60 space-y-4">
-                    <div className="flex items-center justify-between border-b border-border/10 pb-3">
-                      <h3 className="text-xs font-mono font-bold text-white uppercase flex items-center gap-2">
-                        <List className="w-4 h-4 text-primary" /> Onboarding Checklist
-                      </h3>
-                      <span className="text-[10px] font-mono text-muted-foreground">
-                        {Object.values(checklist).filter(Boolean).length} / 4 Completed
-                      </span>
+                  {/* Moats Showcases Card Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 rounded-2xl bg-[#090710]/85 border border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.03)] flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <AlertTriangle className="text-rose-400 w-4 h-4" />
+                        <h4 className="text-xs font-mono font-bold text-white uppercase">Reasoning Breakpoints</h4>
+                      </div>
+                      <p className="text-[11px] text-white/50 leading-relaxed">
+                        Halt executions before catastrophic terminal failures. Program condition lambdas and dim the ReactFlow canvas for visual human-in-the-loop review.
+                      </p>
                     </div>
 
-                    <div className="grid gap-3">
-                      {[
-                        { key: "install", label: "Install minimal CLI telemetry tool", desc: "Run python package manager setup." },
-                        { key: "init", label: "Initialize AetherTracer inside code", desc: "Configure agent framework session metadata." },
-                        { key: "trace", label: "Emit trace telemetry streams", desc: "Capture thought chains, tools, and result payloads." },
-                        { key: "view", label: "View visual reasoning timeline", desc: "Access gorgeous live playback observer sandbox." },
-                      ].map((item) => {
-                        const isDone = checklist[item.key as keyof typeof checklist]
-                        return (
-                          <button
-                            key={item.key}
-                            onClick={() => setChecklist(p => ({ ...p, [item.key]: !isDone }))}
-                            className={`p-3 rounded-2xl border text-left flex items-start gap-3 transition-all duration-200 ${
-                              isDone 
-                                ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-400" 
-                                : "bg-[#0b0d18] border-border/20 hover:border-primary/30 text-muted-foreground"
-                            }`}
-                          >
-                            <span className="mt-0.5">
-                              {isDone 
-                                ? <CheckCircle className="w-4 h-4 text-emerald-400" /> 
-                                : <div className="w-4 h-4 rounded-full border border-muted-foreground/30 hover:border-primary shrink-0" />
-                              }
-                            </span>
-                            <div>
-                              <div className={`text-xs font-mono font-bold ${isDone ? "text-emerald-300" : "text-white"}`}>
-                                {item.label}
-                              </div>
-                              <div className="text-[10px] text-muted-foreground/75 mt-0.5">{item.desc}</div>
-                            </div>
-                          </button>
-                        )
-                      })}
+                    <div className="p-4 rounded-2xl bg-[#07090f]/85 border border-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.03)] flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="text-emerald-400 w-4 h-4" />
+                        <h4 className="text-xs font-mono font-bold text-white uppercase">Cognition Patching</h4>
+                      </div>
+                      <p className="text-[11px] text-white/50 leading-relaxed">
+                        Surgically inject corrected thoughts or modify tool arguments, causing the visualizer to dynamically fork and splice new emerald safe paths on the canvas.
+                      </p>
                     </div>
-                  </div>
 
-                  {/* Real developer architecture explain */}
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-mono font-bold text-white">Why AI Cognition Debugging Matters</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      Unlike traditional microservices, autonomous agents propagate logic using unstructured cognitive decisions, tool loops, and dynamic corrections. Standard logs cannot capture the trajectory of an agent's reasoning. Aether parses unstructured decision contexts into deterministic, high-performance traces.
-                    </p>
+                    <div className="p-4 rounded-2xl bg-[#070712]/85 border border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.03)] flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <Brain className="text-purple-400 w-4 h-4" />
+                        <h4 className="text-xs font-mono font-bold text-white uppercase">Memory Inspector</h4>
+                      </div>
+                      <p className="text-[11px] text-white/50 leading-relaxed">
+                        Audit retrieved semantic vector embeddings, evaluate active sliding token windows, and filter out prompt injections before they compromise execution.
+                      </p>
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-[#06090a]/85 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.03)] flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <Layers className="text-emerald-400 w-4 h-4" />
+                        <h4 className="text-xs font-mono font-bold text-white uppercase">Magical Zero-Config</h4>
+                      </div>
+                      <p className="text-[11px] text-white/50 leading-relaxed">
+                        Drop Aether directly into OpenAI, LangChain, or CrewAI. Zero configurations required—SDK singles-out execution and logs context loops automatically.
+                      </p>
+                    </div>
                   </div>
 
                   {/* Navigation Shortcut button */}
                   <div className="pt-2">
                     <Button 
                       onClick={() => setActiveSection("quickstart")}
-                      className="bg-primary text-black font-mono font-bold hover:bg-primary/95 text-xs px-6 py-5 rounded-full flex items-center gap-2"
+                      className="bg-purple-600 text-white font-mono font-bold hover:bg-purple-500 text-xs px-6 py-5 rounded-full flex items-center gap-2 shadow-[0_0_20px_rgba(168,85,247,0.3)] transition-all"
                     >
-                      Go to Quickstart <ChevronRight className="w-4 h-4" />
+                      Explore Quickstart <ChevronRight className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
@@ -426,16 +416,16 @@ export default function DocsPage() {
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <h2 className="text-2xl font-bold font-mono text-white flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+                      <Sparkles className="w-5 h-5 text-purple-400 animate-pulse" />
                       Quickstart Onboarding
                     </h2>
-                    <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                      Initialize trace instrumentation inside your autonomous agent code in under 30 seconds. Support Python, TypeScript, and full terminal CLI execution.
+                    <p className="text-xs text-white/60 mt-2 leading-relaxed">
+                      Auto-instrument your AI agent logic in under 30 seconds. Zero config, fully responsive logs, and local-first execution.
                     </p>
                   </div>
 
-                  {/* Dynamic Tabs for language select */}
-                  <div className="border-b border-border/10 flex gap-1">
+                  {/* Language Selection Tabs */}
+                  <div className="border-b border-white/10 flex gap-1">
                     {[
                       { id: "python", label: "Python SDK" },
                       { id: "typescript", label: "TypeScript SDK" },
@@ -446,8 +436,8 @@ export default function DocsPage() {
                         onClick={() => setActiveLang(tab.id as CodeLang)}
                         className={`px-4 py-2 border-b-2 font-mono text-xs transition-all ${
                           activeLang === tab.id 
-                            ? "border-primary text-white font-bold" 
-                            : "border-transparent text-muted-foreground hover:text-white"
+                            ? "border-purple-500 text-purple-400 font-bold" 
+                            : "border-transparent text-white/40 hover:text-white"
                         }`}
                       >
                         {tab.label}
@@ -466,39 +456,36 @@ export default function DocsPage() {
                         className="space-y-4"
                       >
                         <div className="space-y-2.5">
-                          <h4 className="text-xs font-mono font-bold text-white">1. Install telemetry package</h4>
-                          <div className="bg-[#040409] border border-border/20 rounded-2xl p-4 flex items-center justify-between font-mono text-xs text-emerald-400">
+                          <h4 className="text-xs font-mono font-bold text-white">1. Install SDK via Pip</h4>
+                          <div className="bg-[#050409]/90 border border-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.05)] rounded-2xl p-4 flex items-center justify-between font-mono text-xs text-purple-300">
                             <code>pip install aether-observe</code>
                             <button
                               onClick={() => handleCopy("pip install aether-observe", "pip-py")}
-                              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-muted-foreground hover:text-white transition-all active:scale-95"
+                              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all active:scale-95 border border-white/5"
                             >
-                              {isCopied === "pip-py" ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+                              {isCopied === "pip-py" ? <Check className="w-4 h-4 text-purple-400" /> : <Copy className="w-4 h-4" />}
                             </button>
                           </div>
                         </div>
 
                         <div className="space-y-2.5">
-                          <h4 className="text-xs font-mono font-bold text-white">2. Initialize AetherTracer</h4>
-                          <div className="relative rounded-2xl border border-border/20 bg-[#040409]/90 p-4 font-mono text-xs text-muted-foreground leading-relaxed overflow-x-auto">
+                          <h4 className="text-xs font-mono font-bold text-white">2. Initialize Zero-Config OpenAI wrapper</h4>
+                          <div className="relative rounded-2xl border border-purple-500/20 bg-[#050409]/90 p-4 font-mono text-xs text-white/70 leading-relaxed overflow-x-auto shadow-[0_0_10px_rgba(168,85,247,0.05)]">
                             <div className="absolute right-4 top-4 flex gap-2">
                               <button
-                                onClick={() => handleCopy(`from aether import AetherTracer\n\ntracer = AetherTracer(agent_name="checkout-agent")\n\ntracer.thought("Resolving lock coordinates")\ntracer.tool("getIdempotent", key="checkout_251")`, "code-py")}
-                                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-muted-foreground hover:text-white transition-all active:scale-95"
+                                onClick={() => handleCopy(`from aether.integrations.openai import instrument_openai\nfrom openai import OpenAI\n\n# Zero config - auto associates with global local-first tracer!\nclient = instrument_openai(OpenAI())`, "code-py")}
+                                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all active:scale-95 border border-white/5"
                               >
-                                {isCopied === "code-py" ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+                                {isCopied === "code-py" ? <Check className="w-4 h-4 text-purple-400" /> : <Copy className="w-4 h-4" />}
                               </button>
                             </div>
                             
-                            <div className="text-[10px] text-muted-foreground/40 border-b border-border/10 pb-2 mb-2">python · agent.py</div>
+                            <div className="text-[10px] text-white/30 border-b border-white/5 pb-2 mb-2">python · agent.py</div>
                             
-                            <div><span className="text-primary font-bold">from</span> aether <span className="text-primary font-bold">import</span> AetherTracer</div>
-                            <div className="text-muted-foreground/50 mt-1"># Create instrumentation tracer</div>
-                            <div>tracer = AetherTracer(agent_name=<span className="text-emerald-400">"checkout-agent"</span>)</div>
-                            
-                            <div className="text-muted-foreground/50 mt-3"># Track internal thoughts, tool coordinates and metadata</div>
-                            <div>tracer.thought(<span className="text-emerald-400">"Resolving lock coordinates"</span>)</div>
-                            <div>tracer.tool(<span className="text-emerald-400">"getIdempotent"</span>, key=<span className="text-emerald-400">"checkout_251"</span>)</div>
+                            <div><span className="text-purple-400 font-bold">from</span> aether.integrations.openai <span className="text-purple-400 font-bold">import</span> instrument_openai</div>
+                            <div><span className="text-purple-400 font-bold">from</span> openai <span className="text-purple-400 font-bold">import</span> OpenAI</div>
+                            <div className="text-white/45 mt-2"># Zero-config wrappers automatically discover Aether default session!</div>
+                            <div>client = instrument_openai(OpenAI())</div>
                           </div>
                         </div>
                       </motion.div>
@@ -514,36 +501,36 @@ export default function DocsPage() {
                       >
                         <div className="space-y-2.5">
                           <h4 className="text-xs font-mono font-bold text-white">1. Add node packages</h4>
-                          <div className="bg-[#040409] border border-border/20 rounded-2xl p-4 flex items-center justify-between font-mono text-xs text-emerald-400">
+                          <div className="bg-[#050409]/90 border border-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.05)] rounded-2xl p-4 flex items-center justify-between font-mono text-xs text-purple-300">
                             <code>npm install @aether/observe</code>
                             <button
                               onClick={() => handleCopy("npm install @aether/observe", "npm-ts")}
-                              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-muted-foreground hover:text-white transition-all active:scale-95"
+                              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all active:scale-95 border border-white/5"
                             >
-                              {isCopied === "npm-ts" ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+                              {isCopied === "npm-ts" ? <Check className="w-4 h-4 text-purple-400" /> : <Copy className="w-4 h-4" />}
                             </button>
                           </div>
                         </div>
 
                         <div className="space-y-2.5">
                           <h4 className="text-xs font-mono font-bold text-white">2. Instrument TypeScript Runtime</h4>
-                          <div className="relative rounded-2xl border border-border/20 bg-[#040409]/90 p-4 font-mono text-xs text-muted-foreground leading-relaxed overflow-x-auto">
+                          <div className="relative rounded-2xl border border-purple-500/20 bg-[#050409]/90 p-4 font-mono text-xs text-white/70 leading-relaxed overflow-x-auto shadow-[0_0_10px_rgba(168,85,247,0.05)]">
                             <div className="absolute right-4 top-4 flex gap-2">
                               <button
                                 onClick={() => handleCopy(`import { AetherTracer } from "@aether/observe";\n\nconst tracer = new AetherTracer({ agentName: "checkout-agent" });\ntracer.thought("Evaluating secure cache runtime");\ntracer.tool("CircuitBreaker", { threshold: 0.85 });`, "code-ts")}
-                                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-muted-foreground hover:text-white transition-all active:scale-95"
+                                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all active:scale-95 border border-white/5"
                               >
-                                {isCopied === "code-ts" ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+                                {isCopied === "code-ts" ? <Check className="w-4 h-4 text-purple-400" /> : <Copy className="w-4 h-4" />}
                               </button>
                             </div>
                             
-                            <div className="text-[10px] text-muted-foreground/40 border-b border-border/10 pb-2 mb-2">typescript · agent.ts</div>
+                            <div className="text-[10px] text-white/30 border-b border-white/5 pb-2 mb-2">typescript · agent.ts</div>
                             
-                            <div><span className="text-primary font-bold">import</span> &#123; AetherTracer &#125; <span className="text-primary font-bold">from</span> <span className="text-emerald-400">"@aether/observe"</span>;</div>
-                            <div className="text-muted-foreground/50 mt-1">// Create high-performance trace client</div>
-                            <div><span className="text-primary font-bold">const</span> tracer = <span className="text-primary font-bold">new</span> AetherTracer(&#123; agentName: <span className="text-emerald-400">"checkout-agent"</span> &#125;);</div>
+                            <div><span className="text-purple-400 font-bold">import</span> &#123; AetherTracer &#125; <span className="text-purple-400 font-bold">from</span> <span className="text-emerald-400">"@aether/observe"</span>;</div>
+                            <div className="text-white/45 mt-1">// Create high-performance TS trace client</div>
+                            <div><span className="text-purple-400 font-bold">const</span> tracer = <span className="text-purple-400 font-bold">new</span> AetherTracer(&#123; agentName: <span className="text-emerald-400">"checkout-agent"</span> &#125;);</div>
                             
-                            <div className="text-muted-foreground/50 mt-3">// Log sequential thought matrices</div>
+                            <div className="text-white/45 mt-3">// Log sequential thought matrices</div>
                             <div>tracer.thought(<span className="text-emerald-400">"Evaluating secure cache runtime"</span>);</div>
                             <div>tracer.tool(<span className="text-emerald-400">"CircuitBreaker"</span>, &#123; threshold: <span className="text-amber-400">0.85</span> &#125;);</div>
                           </div>
@@ -561,35 +548,35 @@ export default function DocsPage() {
                       >
                         <div className="space-y-2.5">
                           <h4 className="text-xs font-mono font-bold text-white">1. Global curl installation</h4>
-                          <div className="bg-[#040409] border border-border/20 rounded-2xl p-4 flex items-center justify-between font-mono text-xs text-emerald-400">
+                          <div className="bg-[#050409]/90 border border-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.05)] rounded-2xl p-4 flex items-center justify-between font-mono text-xs text-purple-300">
                             <code>curl -fsSL https://aether.sh/install | sh</code>
                             <button
                               onClick={() => handleCopy("curl -fsSL https://aether.sh/install | sh", "curl-cli")}
-                              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-muted-foreground hover:text-white transition-all active:scale-95"
+                              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all active:scale-95 border border-white/5"
                             >
-                              {isCopied === "curl-cli" ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+                              {isCopied === "curl-cli" ? <Check className="w-4 h-4 text-purple-400" /> : <Copy className="w-4 h-4" />}
                             </button>
                           </div>
                         </div>
 
                         <div className="space-y-2.5">
-                          <h4 className="text-xs font-mono font-bold text-white">2. CLI command examples</h4>
+                          <h4 className="text-xs font-mono font-bold text-white">2. Debugger CLI commands</h4>
                           <ul className="space-y-2.5">
                             {[
                               { cmd: "aether init", desc: "Creates regional offline repository parameters." },
                               { cmd: "aether replay", desc: "Serves fully responsive web observer socket on local traces." },
                               { cmd: "aether doctor", desc: "Validates local JSON traces, environment, and permissions." },
                             ].map((command, cIdx) => (
-                              <li key={cIdx} className="p-3 rounded-xl border border-border/20 bg-[#040409]/60 flex items-center justify-between">
+                              <li key={cIdx} className="p-3 rounded-xl border border-white/5 bg-[#050409]/60 flex items-center justify-between">
                                 <div className="font-mono text-xs text-white">
-                                  <code className="text-primary font-bold">$</code> {command.cmd}
-                                  <div className="text-[10px] text-muted-foreground mt-1">{command.desc}</div>
+                                  <code className="text-purple-400 font-bold">$</code> {command.cmd}
+                                  <div className="text-[10px] text-white/40 mt-1">{command.desc}</div>
                                 </div>
                                 <button
                                   onClick={() => handleCopy(command.cmd, `c-${cIdx}`)}
-                                  className="p-1.5 rounded bg-white/5 hover:bg-white/10 text-muted-foreground transition-all active:scale-95"
+                                  className="p-1.5 rounded bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all active:scale-95 border border-white/5"
                                 >
-                                  {isCopied === `c-${cIdx}` ? <Check className="w-3.5 h-3.5 text-primary" /> : <Copy className="w-3.5 h-3.5" />}
+                                  {isCopied === `c-${cIdx}` ? <Check className="w-3.5 h-3.5 text-purple-400" /> : <Copy className="w-3.5 h-3.5" />}
                                 </button>
                               </li>
                             ))}
@@ -608,33 +595,23 @@ export default function DocsPage() {
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <h2 className="text-2xl font-bold font-mono text-white">Installation Guide</h2>
-                    <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                      Aether runs locally on virtual systems. Follow the instructions to install the SDK environment and verify setup integrity.
+                    <p className="text-xs text-white/60 mt-2 leading-relaxed">
+                      Aether runs completely local-first inside your workspace shell environment. Secure, private, and lightning fast.
                     </p>
                   </div>
 
                   <div className="space-y-4">
-                    <h3 className="text-sm font-mono font-bold text-white">System Requirements</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="p-4 rounded-2xl border border-border/20 bg-[#070913]/60 font-mono text-[10px] space-y-1">
-                        <div className="text-white font-bold">Python Environment</div>
-                        <div className="text-muted-foreground">Python v3.8 or greater</div>
-                        <div className="text-muted-foreground">Pip package installer package</div>
-                      </div>
-                      <div className="p-4 rounded-2xl border border-border/20 bg-[#070913]/60 font-mono text-[10px] space-y-1">
-                        <div className="text-white font-bold">Node.js Environment</div>
-                        <div className="text-muted-foreground">Node v18.0 or greater</div>
-                        <div className="text-muted-foreground">NPM or PNPM package manager</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Step-by-step check code */}
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-mono font-bold text-white">Verification Steps</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      Verify that your package compiler has write access to create the hidden trace folder `.aether` inside your repository directory root. Aether will attempt to dump offline execution schemas inside `.aether/traces/playback.json` on runtime.
+                    <h3 className="text-sm font-mono font-bold text-white">Local-First Sandbox Integration</h3>
+                    <p className="text-xs text-white/50 leading-relaxed">
+                      Telemetry data remains strictly isolated. The Aether SDK generates offline-ready trace structures inside the folder `.aether/traces/session_*.json` located in the root of your local project environment.
                     </p>
+                    <div className="bg-[#050409]/90 border border-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.05)] rounded-2xl p-4 flex flex-col gap-2 font-mono text-xs text-purple-300">
+                      <div>.project_root/</div>
+                      <div className="pl-4">├── .aether/</div>
+                      <div className="pl-8 text-cyan-400">├── traces/   # Local-first JSON telemetry logs</div>
+                      <div className="pl-8">└── cache/</div>
+                      <div className="pl-4 text-emerald-400">└── main.py    # Your AI Agent logic runs here</div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -645,44 +622,39 @@ export default function DocsPage() {
               {activeSection === "tracer" && (
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <h2 className="text-2xl font-bold font-mono text-white">AetherTracer Core API</h2>
-                    <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                      AetherTracer is the primary hook interface used to instrument and propagate trace segments.
+                    <h2 className="text-2xl font-bold font-mono text-white flex items-center gap-2">
+                      <Code className="text-purple-400" /> AetherTracer Core API
+                    </h2>
+                    <p className="text-xs text-white/60 mt-2 leading-relaxed">
+                      Control thread executions, evaluate logic patterns, and declare custom programmatic reasoning checkpoints.
                     </p>
                   </div>
 
-                  {/* Complete detailed functions descriptions */}
                   <div className="space-y-4">
                     {[
                       {
-                        name: "tracer.thought(message: str)",
-                        type: "COGNITION",
-                        desc: "Registers a sequential cognitive thought block inside the agent thread. Injected straight into the DAG visual graph traversal layer.",
-                        args: "message: The narrative explanation representing what the LLM agent is currently planning or formulating."
+                        name: "@tracer.breakpoint(when='tool_call', condition=lambda ctx: ...)",
+                        type: "PROGRAMMATIC HOOK",
+                        desc: "Register a highly customized, thread-level breakpoint hook. If the condition lambda evaluates to true, the thread freezes instantly and dispatches a review request to the visual visualizer.",
+                        args: "when: string event target ('tool_call' or 'thought'). condition: lambda expression evaluating the active BreakpointContext variables."
                       },
                       {
-                        name: "tracer.tool(name: str, **arguments)",
-                        type: "TOOL CALL",
-                        desc: "Logs execution of internal functions, environment operations, or LLM tool invocations. Automatically updates status badges.",
-                        args: "name: Name of tool function. arguments: Named dictionary containing parameters provided to the tool call."
-                      },
-                      {
-                        name: "tracer.warn_hallucination(description: str, confidence: float)",
-                        type: "GUARDRAIL",
-                        desc: "Dispatches threat warnings or confidence drops to Aether's runtime monitor. Intercepts wildcard deletion parameters in real-time.",
-                        args: "description: Guardrail violation summary. confidence: Numeric probability parameter (0.0 to 1.0) assessing cognitive hallucination risk."
+                        name: "with tracer.guardrails():",
+                        type: "CONTEXT MANAGER",
+                        desc: "Shorthand parameterless method to programmatically shield the inner scope of an agent execution block. Actively audits reasoning commands and catches unsafe system invocations.",
+                        args: "Parameterless. Can be applied cleanly across OpenAI completion hooks or CrewAI execution layers."
                       }
                     ].map((api, idx) => (
-                      <div key={idx} className="p-4 rounded-2xl border border-border/20 bg-[#070913]/60 space-y-2.5">
-                        <div className="flex items-center justify-between border-b border-border/10 pb-2">
-                          <code className="text-xs font-mono text-primary font-bold">{api.name}</code>
-                          <span className="px-2 py-0.5 rounded border border-primary/20 bg-primary/5 text-[9px] font-mono font-bold text-primary">
+                      <div key={idx} className="p-4 rounded-2xl border border-purple-500/20 bg-[#090710]/90 space-y-2.5 shadow-[0_0_15px_rgba(168,85,247,0.02)]">
+                        <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                          <code className="text-xs font-mono text-purple-300 font-bold">{api.name}</code>
+                          <span className="px-2 py-0.5 rounded border border-purple-500/30 bg-purple-500/5 text-[9px] font-mono font-bold text-purple-400">
                             {api.type}
                           </span>
                         </div>
-                        <p className="text-xs text-muted-foreground pl-1.5 leading-relaxed">{api.desc}</p>
-                        <div className="text-[10px] font-mono text-muted-foreground/60 pl-1.5 leading-normal">
-                          <strong className="text-white">Parameters:</strong> {api.args}
+                        <p className="text-[11px] text-white/60 pl-1.5 leading-relaxed">{api.desc}</p>
+                        <div className="text-[10px] font-mono text-white/40 pl-1.5 leading-normal">
+                          <strong className="text-white/60">Arguments:</strong> {api.args}
                         </div>
                       </div>
                     ))}
@@ -696,86 +668,33 @@ export default function DocsPage() {
               {activeSection === "thoughts" && (
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <h2 className="text-2xl font-bold font-mono text-white">Thought Tracking</h2>
-                    <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                      AI systems represent unstructured trajectory paths. Tracking thought progressions provides critical debugger maps for agent logic.
+                    <h2 className="text-2xl font-bold font-mono text-white flex items-center gap-2">
+                      <Cpu className="text-purple-400 animate-pulse" /> Thought Tracking & Hooking
+                    </h2>
+                    <p className="text-xs text-white/60 mt-2 leading-relaxed">
+                      Surgically intercept the reasoning process before downstream tool commands are committed to your server infrastructure.
                     </p>
                   </div>
 
-                  {/* Responsive SDK Flow Visualization SVG with animated pulses */}
-                  <div className="p-5 rounded-3xl border border-border/30 bg-[#04050a]/90 relative overflow-hidden">
-                    <div className="flex items-center justify-between border-b border-border/10 pb-3 mb-4">
-                      <span className="text-[10px] font-mono font-bold text-muted-foreground uppercase flex items-center gap-1.5">
-                        <Activity className="w-3.5 h-3.5 text-primary animate-pulse" /> Live SDK Trajectory Flow
-                      </span>
-                      <span className="text-[9px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
-                        Pulse Traversal Active
-                      </span>
+                  <div className="relative rounded-2xl border border-purple-500/20 bg-[#050409]/90 p-4 font-mono text-xs text-white/70 leading-relaxed overflow-x-auto shadow-[0_0_10px_rgba(168,85,247,0.05)]">
+                    <div className="absolute right-4 top-4 flex gap-2">
+                      <button
+                        onClick={() => handleCopy(`@tracer.breakpoint(\n    when="tool_call",\n    condition=lambda ctx: ctx.args.get("cmd") == "danger"\n)\ndef approve_tool(ctx):\n    # Block execution if local variable risk is too high!\n    return ctx.args.get("confirmation") is True`, "thought-py")}
+                        className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all active:scale-95 border border-white/5"
+                      >
+                        {isCopied === "thought-py" ? <Check className="w-4 h-4 text-purple-400" /> : <Copy className="w-4 h-4" />}
+                      </button>
                     </div>
-
-                    {/* Responsive SVG diagram */}
-                    <div className="relative w-full h-[320px] bg-[#020306] rounded-2xl border border-border/10 overflow-hidden flex flex-col justify-between p-4">
-                      <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" xmlns="http://www.w3.org/2000/svg">
-                        {/* Animated pulses traversing down */}
-                        <g>
-                          <path d="M 60 70 L 60 140" fill="none" stroke="oklch(0.72 0.19 195 / 0.15)" strokeWidth="1.5" />
-                          <circle r="3" fill="oklch(0.72 0.19 195)">
-                            <animateMotion path="M 60 70 L 60 140" dur="2s" repeatCount="indefinite" />
-                          </circle>
-                        </g>
-                        <g>
-                          <path d="M 60 170 L 60 240" fill="none" stroke="oklch(0.72 0.19 195 / 0.15)" strokeWidth="1.5" />
-                          <circle r="3" fill="oklch(0.72 0.19 195)">
-                            <animateMotion path="M 60 170 L 60 240" dur="2s" repeatCount="indefinite" />
-                          </circle>
-                        </g>
-                        {/* Branch paths to right */}
-                        <g>
-                          <path d="M 60 170 C 120 170, 180 140, 220 100" fill="none" stroke="oklch(0.65 0.22 300 / 0.15)" strokeWidth="1.5" strokeDasharray="3 3" />
-                          <circle r="3" fill="oklch(0.65 0.22 300)">
-                            <animateMotion path="M 60 170 C 120 170, 180 140, 220 100" dur="2.4s" repeatCount="indefinite" />
-                          </circle>
-                        </g>
-                      </svg>
-
-                      {/* Flex/Responsive Layout coordinates mapping inside UI */}
-                      <div className="relative z-10 flex flex-col justify-between h-full">
-                        {/* Top: User Prompt */}
-                        <div className="flex items-center justify-between">
-                          <div className="p-3 rounded-xl border border-primary/20 bg-[#070913] w-[140px] text-left font-mono">
-                            <div className="text-[8px] font-bold text-primary">01. INGESTION</div>
-                            <div className="text-[10px] text-white font-bold truncate">User Prompt</div>
-                          </div>
-                          <div className="text-[9px] font-mono text-muted-foreground/60 max-w-[160px] text-right">
-                            Agent initializes thread trajectory path parameters
-                          </div>
-                        </div>
-
-                        {/* Middle: Reasoning node and correction branch */}
-                        <div className="flex items-center justify-between">
-                          <div className="p-3 rounded-xl border border-accent/20 bg-[#070913] w-[140px] text-left font-mono">
-                            <div className="text-[8px] font-bold text-accent">02. COGNITION</div>
-                            <div className="text-[10px] text-white font-bold truncate">Thought Loop</div>
-                          </div>
-
-                          <div className="p-3 rounded-xl border border-red-500/20 bg-[#070913] w-[140px] text-left font-mono shadow-[0_0_15px_rgba(239,68,68,0.15)]">
-                            <div className="text-[8px] font-bold text-red-400">02.B GUARDRAIL</div>
-                            <div className="text-[10px] text-white font-bold truncate">Risk Intercepted</div>
-                          </div>
-                        </div>
-
-                        {/* Bottom: Executed Safe Output */}
-                        <div className="flex items-center justify-between">
-                          <div className="p-3 rounded-xl border border-emerald-500/20 bg-[#070913] w-[140px] text-left font-mono">
-                            <div className="text-[8px] font-bold text-emerald-400">03. EXECUTION</div>
-                            <div className="text-[10px] text-white font-bold truncate">Safe Output</div>
-                          </div>
-                          <div className="text-[9px] font-mono text-muted-foreground/60 max-w-[160px] text-right">
-                            Resolved successfully with targeted safe cleanup action
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    
+                    <div className="text-[10px] text-white/30 border-b border-white/5 pb-2 mb-2">python · custom_hooks.py</div>
+                    
+                    <div><span className="text-purple-400 font-bold">@tracer.breakpoint</span>(</div>
+                    <div className="pl-4">when=<span className="text-emerald-400">"tool_call"</span>,</div>
+                    <div className="pl-4">condition=<span className="text-purple-400">lambda</span> ctx: ctx.args.get(<span className="text-emerald-400">"cmd"</span>) == <span className="text-emerald-400">"danger"</span></div>
+                    <div>)</div>
+                    <div><span className="text-purple-400 font-bold">def</span> <span className="text-cyan-400">approve_tool</span>(ctx):</div>
+                    <div className="pl-4 text-white/45"># The halted BreakpointContext lets you inspect active tool arguments</div>
+                    <div className="pl-4"><span className="text-purple-400 font-bold">return</span> ctx.args.get(<span className="text-emerald-400">"confirmation"</span>) <span className="text-purple-400 font-bold">is</span> <span className="text-purple-400 font-bold">True</span></div>
                   </div>
                 </div>
               )}
@@ -786,14 +705,19 @@ export default function DocsPage() {
               {activeSection === "tools" && (
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <h2 className="text-2xl font-bold font-mono text-white">Tool Logging</h2>
-                    <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                      Tools represent dynamic actions where an agent interacts with external environments, local filesystems, or databases.
+                    <h2 className="text-2xl font-bold font-mono text-white flex items-center gap-2">
+                      <Settings className="text-purple-400" /> Tool Logging & Interception
+                    </h2>
+                    <p className="text-xs text-white/60 mt-2 leading-relaxed">
+                      Surgically mutate tool parameters during active breakpoints, redirecting trajectories live inside the execution block.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-2xl border border-primary/20 bg-primary/5 text-xs text-muted-foreground leading-relaxed">
-                    <strong className="text-white">Tip:</strong> Always declare the raw input arguments provided to your agent tools. Aether will parse the values and automatically format directory wildcards or security issues.
+                  <div className="p-4 rounded-2xl bg-[#090710]/85 border border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.03)] space-y-3">
+                    <h4 className="text-xs font-mono font-bold text-white uppercase">Live Argument Mutation</h4>
+                    <p className="text-[11px] text-white/50 leading-relaxed">
+                      Because the Aether Python SDK clears and updates the local session `args` object with `event["metadata"]["args"]` returned from `_handle_breakpoint`, editing the tool arguments inside the local console or Pdb debugger shell directly mutates the actual live running Python variables of the developer's agent.
+                    </p>
                   </div>
                 </div>
               )}
@@ -805,21 +729,26 @@ export default function DocsPage() {
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <h2 className="text-2xl font-bold font-mono text-white flex items-center gap-2">
-                      <ShieldAlert className="w-5 h-5 text-red-500 animate-pulse" />
-                      Hallucination Detection
+                      <ShieldAlert className="w-5 h-5 text-rose-500 animate-pulse" />
+                      Visual Breakpoints & Forensics
                     </h2>
-                    <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                      Observe how Aether Guardrails intercept high-risk, unstructured deletion requests before they hit the terminal.
+                    <p className="text-xs text-white/60 mt-2 leading-relaxed">
+                      Observe how Aether Guardrails intercept high-risk, unstructured deletion requests before they compromise execution.
                     </p>
                   </div>
 
-                  <div className="bg-[#0b0c16]/80 border border-primary/30 rounded-2xl p-5 flex items-start gap-4">
-                    <ShieldAlert className="w-6 h-6 text-primary shrink-0 mt-0.5 animate-bounce" />
+                  <div className="bg-[#0b0c16]/80 border border-purple-500/30 rounded-2xl p-5 flex items-start gap-4 shadow-[0_0_20px_rgba(168,85,247,0.05)]">
+                    <ShieldAlert className="w-6 h-6 text-purple-400 shrink-0 mt-0.5 animate-bounce" />
                     <div className="space-y-1">
-                      <h4 className="text-xs font-mono font-bold text-white uppercase tracking-wider">Aether Interception paradigms</h4>
-                      <p className="text-[11px] font-mono text-muted-foreground leading-normal">
-                        When the python tracer registers `warn_hallucination` or logs an aggressive command payload (e.g. `rm -rf /var/log/*`), Aether Guardrails immediately decelerate execution (Time Dilation) to 0.1× speed, review parameter values, and inject corrective feedback loops straight back into the agent prompt context.
+                      <h4 className="text-xs font-mono font-bold text-white uppercase tracking-wider">Aether Interception Paradigms</h4>
+                      <p className="text-[11px] text-white/50 leading-normal">
+                        When the python tracer registers `warn_hallucination` or logs an aggressive command payload (e.g. `rm -rf *`), Aether Guardrails immediately decelerate execution. Playback freezes instantly, the ReactFlow canvas dims with a crimson glowing border, and a Left-Side Forensics panel pops up detailing explicit indicator metrics:
                       </p>
+                      <div className="pt-2 pl-4 flex flex-col gap-1.5 text-[10px] text-white/40 font-mono">
+                        <div>• <strong className="text-rose-400">Wildcard Scope:</strong> Root directory or massive wildcard file deletion detected.</div>
+                        <div>• <strong className="text-rose-400">Unsafe Mutation:</strong> Execution bypasses system boundaries.</div>
+                        <div>• <strong className="text-rose-400">Confirmation Deficit:</strong> Zero verification steps provided.</div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -831,15 +760,20 @@ export default function DocsPage() {
               {activeSection === "safety" && (
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <h2 className="text-2xl font-bold font-mono text-white">Safety & Correction</h2>
-                    <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                      Restructuring trajectory paths on the fly turns hallucination boundaries into resolved outcomes.
+                    <h2 className="text-2xl font-bold font-mono text-white flex items-center gap-2">
+                      <Layers className="text-purple-400" /> Trajectory Forking & Patching
+                    </h2>
+                    <p className="text-xs text-white/60 mt-2 leading-relaxed">
+                      Surgically slice and patch the agent's thought context to redirect its downstream trajectory away from the failure vector.
                     </p>
                   </div>
 
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    By intercepting the prompt context, DevOpsGPT can pivot away from full wildcard deletions to targeted age-restricted removals (e.g. `find /var/log -name "*.log" -mtime +30 -exec rm {} \;`). The system recovers securely completely offline without terminal catastrophic failures.
-                  </p>
+                  <div className="p-4 rounded-2xl bg-[#090710]/85 border border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.03)] space-y-3">
+                    <h4 className="text-xs font-mono font-bold text-white uppercase">Visual Splicing & Sibling Nodes</h4>
+                    <p className="text-[11px] text-white/50 leading-relaxed">
+                      Upon clicking "Fork Trajectory" in the debugger bottom actions toolbar, the visualizer surgically splices the events tree. The dangerous hallucination branch is dynamically hidden, and three new emerald-green correction nodes {"(Thought -> Tool -> Result)"} are generated curving staggered off the parent thought card, showing a visually distinct corrected cognition branch.
+                    </p>
+                  </div>
                 </div>
               )}
 
@@ -849,16 +783,18 @@ export default function DocsPage() {
               {activeSection === "local-first" && (
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <h2 className="text-2xl font-bold font-mono text-white">Local-First Architecture</h2>
-                    <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                      Privacy-first instrumentation ensures zero token leaks or code telemetry exfiltration.
+                    <h2 className="text-2xl font-bold font-mono text-white flex items-center gap-2">
+                      <Database className="text-purple-400" /> Glowing Memory Inspector
+                    </h2>
+                    <p className="text-xs text-white/60 mt-2 leading-relaxed">
+                      Evaluate active sliding token windows, analyze semantic similarities, and prevent vector context leaks.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-2xl border border-[#00FFA3]/20 bg-[#00FFA3]/5 text-xs text-muted-foreground leading-relaxed flex gap-3">
-                    <Database className="w-5 h-5 text-[#00FFA3] shrink-0 mt-0.5" />
+                  <div className="p-4 rounded-2xl border border-purple-500/20 bg-[#090710]/50 text-xs text-white/55 leading-relaxed flex gap-3 shadow-[0_0_15px_rgba(168,85,247,0.05)]">
+                    <Database className="w-5 h-5 text-purple-400 shrink-0 mt-0.5 animate-pulse" />
                     <div>
-                      <strong className="text-white">Zero Telemetry Isolation:</strong> Traces execute inside local loopbacks, saving variables straight to humans-readable JSON structures in the hidden directory `.aether/traces`. No external server handshakes occur.
+                      <strong className="text-white">Active Dual-Pane Sidebar:</strong> Click "Memory Inspector" inside the debugger toolbar to trigger a glowing secondary sidebar. Audit semantic similarity scores for retrieved vector store chunks, check Cosine Similarity ratings, detect blocked prompt injections, and track FIFO context window token limits.
                     </div>
                   </div>
                 </div>

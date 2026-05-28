@@ -43,7 +43,7 @@ export function Footer() {
               <span className="text-lg font-bold text-foreground">Aether</span>
             </a>
             <p className="text-sm text-muted-foreground mb-6 max-w-xs">
-              Lightweight AI cognition observability. See how AI thinks in realtime.
+              Lightweight local-first AI cognition debugger. See how AI thinks in realtime.
             </p>
             <div className="flex items-center gap-4">
               <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">

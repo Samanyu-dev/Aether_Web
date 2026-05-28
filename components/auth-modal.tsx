@@ -120,7 +120,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
               <p className="mt-2 text-xs text-muted-foreground">
                 {isLogin
                   ? "Initialize your session and observe local-first agent cognition"
-                  : "Join the developer preview of our AI observability engine"}
+                  : "Join the developer preview of our local-first AI cognition debugger"}
               </p>
             </div>
 

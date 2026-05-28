@@ -88,7 +88,7 @@ export function ArchitectureVisuals() {
             transition={{ delay: 0.2 }}
             className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto"
           >
-            Understand the complete lifecycle of AI observability. Trace how cognition events flow from the core agent to a cinematic playback UI in six lightweight steps.
+            Understand the complete lifecycle of local-first AI agent debugging. Trace how cognition events flow from the core agent to a visual replay canvas in three lightweight steps.
           </motion.p>
         </div>
 
