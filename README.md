@@ -1,35 +1,62 @@
-# Aether_Web
+# Aether Web
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+Frontend experience for the Aether platform: a local-first cognition debugger for AI agents.
 
-## Built with v0
+## Live Links
+- Production: [https://aether-dev.vercel.app](https://aether-dev.vercel.app)
+- Core Platform Repo: [Aether](https://github.com/Samanyu-dev/Aether)
+- This Frontend Repo: [Aether_Web](https://github.com/Samanyu-dev/Aether_Web)
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+## What This App Covers
+- Authentication flow (Supabase)
+- Trace and replay UX for agent workflows
+- Visual debugging surfaces for cognitive graph traversal
+- Product, pricing, docs, and legal web pages
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_tRgKwD66kjMMZ93oBqCOBemQJ1Xm)
+## Tech Stack
+- Next.js 16 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- Supabase (`@supabase/ssr`, `@supabase/supabase-js`)
+- Zustand + modern UI primitives (Radix)
 
-## Getting Started
+## Local Development
 
-First, run the development server:
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
+## Environment Variables
+
+Set these before running locally or deploying:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+The app can also read `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` as a fallback key.
+
+## Scripts
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+npm run build
+npm run start
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deployment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project is deployed on Vercel. Standard flow:
+1. Push to `main`.
+2. Vercel builds and deploys.
+3. Confirm Supabase environment variables are set in Vercel Project Settings.
 
-## Learn More
-
-To learn more, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
-
-<a href="https://v0.app/chat/api/kiro/clone/Samanyu-dev/Aether_Web" alt="Open in Kiro"><img src="https://pdgvvgmkdvyeydso.public.blob.vercel-storage.com/open%20in%20kiro.svg?sanitize=true" /></a>
+## Notes
+- This repository was initially bootstrapped from v0 and then iterated with custom product-specific functionality.
+- For SDK and full platform context, see the main [Aether](https://github.com/Samanyu-dev/Aether) repository.
